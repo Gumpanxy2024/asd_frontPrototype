@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互动训练 - 星语助手</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8fafc;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .avatar-container {
+            position: relative;
+            overflow: hidden;
+            background-color: #f0f9ff;
+            border-radius: 12px;
+            border: 3px solid #4CAF50;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .avatar-status {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(76, 175, 80, 0.6);
+            padding: 8px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        .emotion-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .emotion-option:hover {
+            transform: scale(1.05);
+        }
+        .emotion-selected {
+            border: 3px solid #3B82F6;
+            transform: scale(1.05);
+        }
+        .attention-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 50;
+            animation: fadeInOut 2s forwards;
+        }
+        .feedback {
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+        .feedback.show {
+            opacity: 1;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .scene-option {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .scene-option:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .scene-selected {
+            border: 2px solid #3B82F6;
+            background-color: #EFF6FF;
+        }
+        .avatar-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .avatar-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            display: flex;
+            gap: 8px;
+        }
+        .avatar-button {
+            background-color: rgba(255,255,255,0.6);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4B5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .avatar-button:hover {
+            background-color: rgba(255,255,255,0.8);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container bg-gray-100">
+        <div class="main-container p-6">
+            <!-- 顶部导航 -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">互动训练</h2>
+                <div>
+                    <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-redo mr-2"></i>重新开始
+                    </button>
+                    <button class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 ml-2">
+                        <i class="fas fa-cog mr-2"></i>设置
+                    </button>
+                </div>
+            </div>
+
+            <!-- 场景选择区 -->
+            <div id="scene-selector" class="mb-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-3">选择训练场景：</h3>
+                <div class="grid grid-cols-5 gap-4">
+                    <div class="scene-option scene-selected" data-scene="school">
+                        <div class="bg-blue-100 p-4 text-center">
+                            <i class="fas fa-school text-3xl text-blue-600 mb-2"></i>
+                            <p class="font-medium">学校</p>
+                        </div>
+                    </div>
+                    <div class="scene-option" data-scene="social">
+                        <div class="bg-green-100 p-4 text-center">
+                            <i class="fas fa-users text-3xl text-green-600 mb-2"></i>
+                            <p class="font-medium">社交</p>
+                        </div>
+                    </div>
+                    <div class="scene-option" data-scene="transport">
+                        <div class="bg-yellow-100 p-4 text-center">
+                            <i class="fas fa-bus text-3xl text-yellow-600 mb-2"></i>
+                            <p class="font-medium">交通</p>
+                        </div>
+                    </div>
+                    <div class="scene-option" data-scene="food">
+                        <div class="bg-red-100 p-4 text-center">
+                            <i class="fas fa-utensils text-3xl text-red-600 mb-2"></i>
+                            <p class="font-medium">吃饭</p>
+                        </div>
+                    </div>
+                    <div class="scene-option" data-scene="family">
+                        <div class="bg-purple-100 p-4 text-center">
+                            <i class="fas fa-home text-3xl text-purple-600 mb-2"></i>
+                            <p class="font-medium">家庭关系</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主要内容区域 -->
+            <div class="flex h-full">
+                <!-- 左侧虚拟形象显示区 -->
+                <div class="w-1/4 pr-4">
+                    <div class="avatar-container h-full rounded-lg shadow-md">
+                        <!-- 虚拟形象替代摄像头 -->
+                        <img id="avatar-image" src="./assets/virtual.png" alt="虚拟助手" class="avatar-animation">
+                        <div class="avatar-status">
+                            <i class="fas fa-smile-beam mr-2"></i> 我在听你说话
+                        </div>
+                        <div class="avatar-controls">
+                            <div class="avatar-button" id="avatar-style">
+                                <i class="fas fa-tshirt"></i>
+                            </div>
+                            <div class="avatar-button" id="avatar-expression">
+                                <i class="fas fa-laugh"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 注意力状态显示 -->
+                    <div class="mt-4 bg-white p-3 rounded-lg shadow-sm">
+                        <h4 class="text-sm font-semibold text-gray-700 mb-2">互动状态</h4>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                            <div class="bg-green-600 h-2.5 rounded-full" style="width: 85%"></div>
+                        </div>
+                        <p class="text-xs text-gray-500">今天表现很棒！继续保持专注</p>
+                    </div>
+                </div>
+
+                <!-- 右侧互动训练区 -->
+                <div class="w-3/4 flex flex-col">
+                    <!-- 互动训练容器 -->
+                    <div class="bg-white rounded-lg shadow-md p-6 flex-grow">
+                        <!-- 场景提示词 -->
+                        <div class="mb-8 text-center">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">场景理解训练 - <span id="current-scene-label">学校场景</span></h3>
+                            <div class="p-4 bg-blue-50 rounded-lg">
+                                <p class="text-lg text-gray-700">洋洋今天心情怎么样？</p>
+                            </div>
+                        </div>
+
+                        <!-- 表情图片选择区 -->
+                        <div class="grid grid-cols-3 gap-4 mb-8">
+                            <div class="emotion-option rounded-lg overflow-hidden shadow hover:shadow-lg" data-emotion="happy">
+                                <img src="./assets/happy.png" alt="开心表情" class="w-full h-auto">
+                                <div class="p-3 text-center bg-gray-50">开心</div>
+                            </div>
+                            <div class="emotion-option rounded-lg overflow-hidden shadow hover:shadow-lg" data-emotion="sad">
+                                <img src="./assets/sadness.png" alt="伤心表情" class="w-full h-auto">
+                                <div class="p-3 text-center bg-gray-50">伤心</div>
+                            </div>
+                            <div class="emotion-option rounded-lg overflow-hidden shadow hover:shadow-lg" data-emotion="angry">
+                                <img src="./assets/angry.png" alt="生气表情" class="w-full h-auto">
+                                <div class="p-3 text-center bg-gray-50">生气</div>
+                            </div>
+                        </div>
+
+                        <!-- 答案反馈区 -->
+                        <div id="feedback-correct" class="feedback p-4 bg-green-100 border-l-4 border-green-400 rounded-md mb-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-green-500"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-green-700">回答正确！洋洋看起来很开心。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="feedback-incorrect" class="feedback p-4 bg-red-100 border-l-4 border-red-400 rounded-md mb-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-times-circle text-red-500"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-red-700">再仔细看看，洋洋的表情是什么？</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 下一步按钮 -->
+                        <div class="flex justify-end mt-4">
+                            <button id="next-btn" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50" disabled>
+                                下一题 <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 底部进度条 -->
+                    <div class="mt-4 bg-white rounded-lg shadow-md p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-medium text-gray-700">训练进度</span>
+                            <span class="text-sm font-medium text-blue-600">2/10</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: 20%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 注意力提醒弹窗 -->
+    <div id="attention-alert" class="attention-alert hidden">
+        <div class="bg-yellow-500 text-white font-bold px-8 py-4 rounded-lg shadow-lg">
+            <i class="fas fa-exclamation-triangle mr-2"></i> 你分心了...请集中注意力！
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取摄像头权限并在后台分析，但不显示视频流
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        // 创建一个隐藏的video元素用于后台处理
+                        const hiddenVideo = document.createElement('video');
+                        hiddenVideo.setAttribute('id', 'hidden-video');
+                        hiddenVideo.style.display = 'none';
+                        hiddenVideo.autoplay = true;
+                        hiddenVideo.muted = true;
+                        document.body.appendChild(hiddenVideo);
+                        hiddenVideo.srcObject = stream;
+                        
+                        // 这里可以添加视频分析代码，如表情识别、注意力监测等
+                        hiddenVideo.addEventListener('play', function() {
+                            // 例如每秒分析一次视频帧
+                            setInterval(function() {
+                                analyzeVideoFrame(hiddenVideo);
+                            }, 1000);
+                        });
+                    })
+                    .catch(function(error) {
+                        console.error("无法访问摄像头: ", error);
+                        // 如果无法获取摄像头，仍然显示虚拟形象
+                        updateAvatarStatus("无法连接摄像头，使用默认模式");
+                    });
+            }
+            
+            // 分析视频帧的函数 - 这里只是示例框架，实际实现可能更复杂
+            function analyzeVideoFrame(videoElement) {
+                // 这里可以添加实际的视频分析逻辑
+                // 例如使用TensorFlow.js或其他JS库进行面部表情识别
+                
+                // 模拟根据分析更新虚拟形象状态
+                const attentionLevel = Math.random(); // 示例：随机注意力水平
+                if (attentionLevel < 0.3) {
+                    // 检测到注意力不集中时显示提醒
+                    showAttentionAlert();
+                }
+                
+                // 更新虚拟形象的状态
+                updateAvatarStatus("正在分析互动...");
+            }
+            
+            // 更新虚拟形象状态的函数
+            function updateAvatarStatus(message) {
+                const avatarStatus = document.querySelector('.avatar-status');
+                if (avatarStatus) {
+                    avatarStatus.innerHTML = `<i class="fas fa-smile-beam mr-2"></i> ${message}`;
+                }
+            }
+            
+            // 显示注意力提醒
+            function showAttentionAlert() {
+                const attentionAlert = document.getElementById('attention-alert');
+                if (!attentionAlert.classList.contains('hidden')) return;
+                
+                attentionAlert.classList.remove('hidden');
+                attentionAlert.querySelector('div').innerHTML = 
+                    '<i class="fas fa-smile mr-2"></i> 让我们一起继续专注学习吧！';
+                
+                setTimeout(function() {
+                    attentionAlert.classList.add('hidden');
+                }, 3000);
+            }
+
+            // 场景选择交互
+            const sceneOptions = document.querySelectorAll('.scene-option');
+            const currentSceneLabel = document.getElementById('current-scene-label');
+            
+            sceneOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除其他选项的选中状态
+                    sceneOptions.forEach(opt => opt.classList.remove('scene-selected'));
+                    // 添加当前选项的选中状态
+                    this.classList.add('scene-selected');
+                    
+                    // 更新当前场景标签
+                    const sceneType = this.getAttribute('data-scene');
+                    let sceneLabel = "学校场景";
+                    
+                    switch(sceneType) {
+                        case 'social': 
+                            sceneLabel = "社交场景"; 
+                            break;
+                        case 'transport': 
+                            sceneLabel = "交通场景"; 
+                            break;
+                        case 'food': 
+                            sceneLabel = "吃饭场景"; 
+                            break;
+                        case 'family': 
+                            sceneLabel = "家庭关系场景"; 
+                            break;
+                    }
+                    
+                    currentSceneLabel.textContent = sceneLabel;
+                });
+            });
+
+            // 表情选择交互
+            const emotionOptions = document.querySelectorAll('.emotion-option');
+            const feedbackCorrect = document.getElementById('feedback-correct');
+            const feedbackIncorrect = document.getElementById('feedback-incorrect');
+            const nextBtn = document.getElementById('next-btn');
+            
+            emotionOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // 移除其他选项的选中状态
+                    emotionOptions.forEach(opt => opt.classList.remove('emotion-selected'));
+                    // 添加当前选项的选中状态
+                    this.classList.add('emotion-selected');
+
+                    // 启用下一步按钮
+                    nextBtn.disabled = false;
+
+                    // 显示答案反馈 (假设"开心"是正确答案)
+                    if (this.getAttribute('data-emotion') === 'happy') {
+                        feedbackCorrect.classList.add('show');
+                        feedbackIncorrect.classList.remove('show');
+                    } else {
+                        feedbackCorrect.classList.remove('show');
+                        feedbackIncorrect.classList.add('show');
+                    }
+                });
+            });
+
+            // 虚拟形象控制
+            const avatarStyleBtn = document.getElementById('avatar-style');
+            const avatarExpressionBtn = document.getElementById('avatar-expression');
+            const avatarImage = document.getElementById('avatar-image');
+            
+            // 虚拟形象样式切换
+            avatarStyleBtn.addEventListener('click', function() {
+                // 这里可以添加不同样式的切换逻辑
+                // 例如更换虚拟形象的服装或外观
+                const styles = ['default', 'casual', 'formal', 'sporty'];
+                const randomStyle = styles[Math.floor(Math.random() * styles.length)];
+                avatarImage.setAttribute('src', `https://via.placeholder.com/300x400?text=形象_${randomStyle}`);
+                
+                // 如果有摄像头分析数据，可以在这里进行更适合的形象调整
+                const hiddenVideo = document.getElementById('hidden-video');
+                if (hiddenVideo && !hiddenVideo.paused) {
+                    // 使用视频分析结果调整形象
+                    console.log("根据摄像头数据调整形象样式");
+                }
+            });
+
+            // 虚拟形象表情切换
+            avatarExpressionBtn.addEventListener('click', function() {
+                // 这里可以添加不同表情的切换逻辑
+                const expressions = ['smile', 'wink', 'surprise', 'thinking'];
+                const randomExpression = expressions[Math.floor(Math.random() * expressions.length)];
+                avatarImage.setAttribute('src', `https://via.placeholder.com/300x400?text=表情_${randomExpression}`);
+                
+                // 如果有摄像头分析数据，可以模仿用户表情
+                const hiddenVideo = document.getElementById('hidden-video');
+                if (hiddenVideo && !hiddenVideo.paused) {
+                    // 使用视频分析结果调整表情
+                    console.log("根据摄像头数据调整形象表情");
+                }
+            });
+
+            // 不再使用setTimeout模拟互动提示，而是由摄像头分析触发
+        });
+    </script>
+</body>
+</html>

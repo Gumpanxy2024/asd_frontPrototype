@@ -1,0 +1,51 @@
+<!-- 导航栏组件 -->
+<nav class="app-navbar">
+    <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="logo.png" alt="星童伙伴" class="h-8 mr-3">
+            <span class="font-bold text-xl text-gray-800">星童伙伴</span>
+        </div>
+        <div class="flex items-center space-x-1">
+            <a href="home.html" class="nav-link" id="nav-home">
+                <i class="fas fa-home mr-2"></i>首页
+            </a>
+            <a href="moodtrend.html" class="nav-link" id="nav-mood">
+                <i class="fas fa-chart-line mr-2"></i>情绪分析
+            </a>
+            <a href="diary.html" class="nav-link" id="nav-diary">
+                <i class="fas fa-book mr-2"></i>成长日记
+            </a>
+            <a href="chatbot.html" class="nav-link" id="nav-chat">
+                <i class="fas fa-robot mr-2"></i>AI助手
+            </a>
+            <a href="community.html" class="nav-link" id="nav-community">
+                <i class="fas fa-users mr-2"></i>社区
+            </a>
+        </div>
+        <div>
+            <button class="bg-gray-100 p-2 rounded-full text-gray-600 hover:bg-gray-200" title="User Profile">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // 设置当前页面的导航高亮
+    document.addEventListener('DOMContentLoaded', function() {
+        const path = window.location.pathname;
+        const page = path.split('/').pop();
+        
+        if(page.includes('home')) {
+            document.getElementById('nav-home').classList.add('active');
+        } else if(page.includes('mood')) {
+            document.getElementById('nav-mood').classList.add('active');
+        } else if(page.includes('diary')) {
+            document.getElementById('nav-diary').classList.add('active');
+        } else if(page.includes('chat')) {
+            document.getElementById('nav-chat').classList.add('active');
+        } else if(page.includes('community')) {
+            document.getElementById('nav-community').classList.add('active');
+        }
+    });
+</script>

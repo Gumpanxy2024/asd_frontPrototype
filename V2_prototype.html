@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星语助手 - 孤独症儿童AI助手</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            padding: 2rem;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #2d3748;
+            text-align: center;
+            position: relative;
+        }
+        
+        .page-title::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #4299e1, #fef3c7);
+            margin: 0.75rem auto 0;
+            border-radius: 2px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            padding: 0.5rem 1.25rem;
+            margin: 0 0.5rem 0.5rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .nav-tab:hover {
+            background-color: #edf2f7;
+        }
+        
+        .nav-tab.active {
+            background-color: #4299e1;
+            color: white;
+            box-shadow: 0 4px 6px rgba(66, 153, 225, 0.2);
+        }
+        
+        .prototype-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 2.5rem;
+            max-width: 2200px;
+            margin: 0 auto;
+        }
+        
+        .frame-container {
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .frame-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .frame-title {
+            padding: 1rem 1.25rem;
+            font-weight: 500;
+            background-color: #4299e1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .frame-title-text {
+            display: flex;
+            align-items: center;
+        }
+        
+        .frame-title-text i {
+            margin-right: 10px;
+        }
+        
+        .frame-controls {
+            display: flex;
+            gap: 0.75rem;
+        }
+        
+        .frame-control-btn {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .frame-control-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .iframe-wrapper {
+            position: relative;
+            height: 600px;
+            background-color: #f9fafb;
+        }
+        
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #4299e1;
+            font-size: 2rem;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        iframe.loaded {
+            opacity: 1;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .modal-content {
+            background-color: white;
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .modal-header {
+            background-color: #4299e1;
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-body {
+            flex-grow: 1;
+            position: relative;
+        }
+        
+        .modal-body iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .close-modal:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .version-info {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #718096;
+        }
+        
+        @media (max-width: 768px) {
+            .prototype-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 class="page-title">星语助手 - 孤独症儿童AI助手 (原型展示)</h1>
+    
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-category="all">全部</div>
+        <div class="nav-tab" data-category="onboarding">引导流程</div>
+        <div class="nav-tab" data-category="core">核心功能</div>
+        <div class="nav-tab" data-category="support">支持工具</div>
+    </div>
+    
+    <div class="prototype-container">
+        <div class="frame-container" data-category="onboarding">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-rocket"></i>开场界面 (splash.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="splash.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="splash.html" title="开场界面" data-src="splash.html"></iframe>
+            </div>
+        </div>
+
+        <div class="frame-container" data-category="onboarding">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-info-circle"></i>产品介绍 (information.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="information.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="information.html" title="产品介绍" data-src="information.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="onboarding">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-sign-in-alt"></i>登录界面 (login.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="login.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="login.html" title="登录界面" data-src="login.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="core">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-home"></i>主页 (home.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="home.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="home.html" title="主页" data-src="home.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="core">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-comments"></i>AI助手对话 (chatbot.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="chatbot.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="chatbot.html" title="AI助手对话" data-src="chatbot.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="support">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-book"></i>每日记录 (diary.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="diary.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="diary.html" title="每日记录" data-src="diary.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="support">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-chart-line"></i>情绪趋势 (moodtrend.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="moodtrend.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="moodtrend.html" title="情绪趋势" data-src="moodtrend.html"></iframe>
+            </div>
+        </div>
+        
+        <div class="frame-container" data-category="support">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-users"></i>社区问答 (community.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="community.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="community.html" title="社区问答" data-src="community.html"></iframe>
+            </div>
+        </div>
+
+        <div class="frame-container" data-category="core">
+            <div class="frame-title">
+                <div class="frame-title-text">
+                    <i class="fas fa-chalkboard-teacher"></i>互动训练 (training.html)
+                </div>
+                <div class="frame-controls">
+                    <button class="frame-control-btn refresh-btn" title="刷新">
+                        <i class="fas fa-redo-alt"></i>
+                    </button>
+                    <button class="frame-control-btn expand-btn" title="全屏查看" data-iframe="training.html">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="iframe-wrapper">
+                <div class="loading-indicator">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <iframe src="training.html" title="互动训练" data-src="training.html"></iframe>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 全屏模态框 -->
+    <div id="fullscreenModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">页面预览</h2>
+                <button class="close-modal" id="closeModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="modalIframe" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div class="version-info">星语助手原型 v1.0.0 | 更新日期：2025年3月21日</div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            // 处理iframe加载完成
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.onload = function() {
+                    this.classList.add('loaded');
+                    const loadingIndicator = this.previousElementSibling;
+                    loadingIndicator.style.display = 'none';
+                };
+            });
+            
+            // 处理全屏查看按钮
+            const expandButtons = document.querySelectorAll('.expand-btn');
+            const modal = document.getElementById('fullscreenModal');
+            const modalIframe = document.getElementById('modalIframe');
+            const modalTitle = document.getElementById('modalTitle');
+            const closeModal = document.getElementById('closeModal');
+            
+            expandButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const iframeSrc = this.getAttribute('data-iframe');
+                    const frameTitle = this.closest('.frame-title').querySelector('.frame-title-text').textContent.trim();
+                    
+                    modalTitle.textContent = frameTitle;
+                    modalIframe.src = iframeSrc;
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            
+            closeModal.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // 点击模态框外部关闭
+            modal.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // 处理刷新按钮
+            const refreshButtons = document.querySelectorAll('.refresh-btn');
+            refreshButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const iframeWrapper = this.closest('.frame-container').querySelector('.iframe-wrapper');
+                    const iframe = iframeWrapper.querySelector('iframe');
+                    const loadingIndicator = iframeWrapper.querySelector('.loading-indicator');
+                    
+                    // 显示加载指示器
+                    loadingIndicator.style.display = 'block';
+                    iframe.classList.remove('loaded');
+                    
+                    // 刷新iframe
+                    const src = iframe.getAttribute('data-src');
+                    iframe.src = src;
+                });
+            });
+            
+            // 分类筛选功能
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const frameContainers = document.querySelectorAll('.frame-container');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 更新激活标签
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // 筛选展示
+                    frameContainers.forEach(container => {
+                        if (category === 'all' || container.getAttribute('data-category') === category) {
+                            container.style.display = 'flex';
+                        } else {
+                            container.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

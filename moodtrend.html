@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情绪与睡眠分析 - 星童伙伴</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #2d3748;
+        }
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        .trend-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .trend-card:hover {
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+        .trend-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.2rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1.2rem;
+        }
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .header-section {
+            background: linear-gradient(to right, #4a6bdf, #45a6ff);
+            color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="p-6 max-w-6xl mx-auto">
+        <!-- 页面标题区域 -->
+        <div class="header-section mb-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">情绪与睡眠分析</h2>
+                <div class="flex items-center">
+                    <div class="mr-4">
+                        <label for="timeRange" class="sr-only">选择时间范围</label>
+                        <select id="timeRange" class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-700">
+                            <option value="week">最近一周</option>
+                            <option value="month" selected>最近一月</option>
+                            <option value="quarter">最近三月</option>
+                        </select>
+                    </div>
+                    <button class="bg-white text-blue-600 border border-white rounded-lg px-4 py-2 flex items-center hover:bg-blue-50 transition-colors">
+                        <i class="fas fa-download mr-2"></i>导出报告
+                    </button>
+                </div>
+            </div>
+            <p class="mt-2 opacity-90">追踪观察情绪变化和睡眠质量，帮助更好地了解孩子状态</p>
+        </div>
+        
+        <!-- 情绪趋势图 -->
+        <div class="trend-card">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-medium flex items-center">
+                    <i class="fas fa-heart mr-2 text-pink-500"></i>
+                    情绪变化趋势
+                </h3>
+                <div class="flex">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #4299e1;"></div>
+                        <span class="text-sm text-gray-600">开心程度</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f56565;"></div>
+                        <span class="text-sm text-gray-600">焦虑程度</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="moodChart"></canvas>
+            </div>
+            <div class="mt-4 text-sm text-gray-500 bg-blue-50 p-3 rounded-lg">
+                <i class="fas fa-info-circle mr-1 text-blue-500"></i>
+                情绪变化与日常活动密切相关，趋势图可帮助发现规律和触发因素。
+            </div>
+        </div>
+        
+        <!-- 睡眠数据图 -->
+        <div class="trend-card">
+            <div class="flex justify-between items-center mb-5">
+                <h3 class="font-medium flex items-center">
+                    <i class="fas fa-moon mr-2 text-indigo-500"></i>
+                    睡眠质量分析
+                </h3>
+                <div class="flex">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #805ad5;"></div>
+                        <span class="text-sm text-gray-600">睡眠时长</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #3182ce;"></div>
+                        <span class="text-sm text-gray-600">睡眠质量</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="sleepChart"></canvas>
+            </div>
+            <div class="mt-4 text-sm text-gray-500 bg-indigo-50 p-3 rounded-lg">
+                <i class="fas fa-info-circle mr-1 text-indigo-500"></i>
+                睡眠质量对情绪和行为有显著影响，睡眠数据可帮助建立健康的作息习惯。
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 情绪趋势图表
+        const moodCtx = document.getElementById('moodChart').getContext('2d');
+        const moodChart = new Chart(moodCtx, {
+            type: 'line',
+            data: {
+                labels: ['11/1', '11/3', '11/5', '11/7', '11/9', '11/11', '11/13', '11/15', '11/17', '11/19', '11/21'],
+                datasets: [
+                    {
+                        label: '开心程度',
+                        data: [60, 65, 70, 55, 40, 45, 65, 75, 68, 72, 78],
+                        borderColor: '#4299e1',
+                        backgroundColor: 'rgba(66, 153, 225, 0.15)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    },
+                    {
+                        label: '焦虑程度',
+                        data: [35, 30, 25, 40, 55, 50, 30, 20, 25, 22, 18],
+                        borderColor: '#f56565',
+                        backgroundColor: 'rgba(245, 101, 101, 0.15)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#2d3748',
+                        bodyColor: '#4a5568',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 6
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            color: '#718096',
+                            font: {
+                                size: 11
+                            },
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#718096',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 睡眠数据图表
+        const sleepCtx = document.getElementById('sleepChart').getContext('2d');
+        const sleepChart = new Chart(sleepCtx, {
+            type: 'bar',
+            data: {
+                labels: ['11/1', '11/3', '11/5', '11/7', '11/9', '11/11', '11/13', '11/15', '11/17', '11/19', '11/21'],
+                datasets: [
+                    {
+                        label: '睡眠时长(小时)',
+                        data: [8.2, 7.5, 8.0, 6.5, 7.2, 8.5, 9.0, 8.3, 7.8, 8.1, 8.4],
+                        backgroundColor: 'rgba(128, 90, 213, 0.7)',
+                        borderRadius: 6,
+                        categoryPercentage: 0.6,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: '睡眠质量',
+                        data: [75, 65, 80, 55, 68, 85, 88, 78, 72, 80, 85],
+                        type: 'line',
+                        borderColor: '#3182ce',
+                        backgroundColor: 'rgba(49, 130, 206, 0)',
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#3182ce',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        yAxisID: 'y'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            boxWidth: 12,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 20,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#2d3748',
+                        bodyColor: '#4a5568',
+                        borderColor: '#e2e8f0',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 6,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+                                if (label.includes('质量')) {
+                                    return `${label}: ${value}%`;
+                                }
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        position: 'right',
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: '质量(%)',
+                            color: '#3182ce',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#3182ce',
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    y1: {
+                        position: 'left',
+                        beginAtZero: true,
+                        max: 12,
+                        title: {
+                            display: true,
+                            text: '睡眠时长(小时)',
+                            color: '#805ad5',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.05)'
+                        },
+                        ticks: {
+                            color: '#805ad5',
+                            stepSize: 2
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: '#718096',
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

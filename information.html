@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于星语助手 - 产品与团队介绍</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #4299e1 0%, #fef3c7 100%);
+            color: #2d3748;
+            min-height: 100vh;
+        }
+        
+        .page-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .content-section {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .content-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #3182ce;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-card {
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 1.5rem;
+            height: 100%;
+            transition: transform 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: #ebf4ff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: #4299e1;
+            font-size: 1.5rem;
+        }
+        
+        .team-member {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .member-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #4299e1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            background-color: #3182ce;
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .content-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-container">
+        <header class="header">
+            <div>
+                <h1 class="text-3xl font-bold text-white"星语助手</h1>
+                <p class="text-white text-opacity-80 mt-2">从理解开始，让每一步都被温暖守护</p>
+            </div>
+            <img src="./assets/logo.png" alt=星语助手" class="w-24">
+        </header>
+        
+        <!-- 产品介绍部分 -->
+        <section class="content-section">
+            <h2 class="section-title">产品介绍</h2>
+            <p class="mb-6 text-lg"星语助手是一款专为自闭症谱系障碍(ASD)儿童及其家庭设计的AI助手应用，旨在提供个性化支持、科学指导和情感陪伴，帮助星童们更好地理解世界，表达自我。</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">智能对话</h3>
+                    <p class="text-gray-600">通过自然语言处理技术，提供情感支持和实用建议，帮助孩子们更好地表达和理解情绪。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">行为追踪</h3>
+                    <p class="text-gray-600">记录并分析孩子的情绪变化和睡眠质量，导出相关报告并提出建议，帮助家长和治疗师制定更有效的干预策略。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">社交故事</h3>
+                    <p class="text-gray-600">提供个性化的社交故事和情境模拟，帮助孩子们理解社交规则和应对日常挑战。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">日常结构化</h3>
+                    <p class="text-gray-600">可视化的日程安排和任务分解，帮助建立可预测的日常生活，减少焦虑和过渡困难。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">社区支持</h3>
+                    <p class="text-gray-600">连接家长、教育者和专业人士的支持社区，分享经验和资源，共同成长。</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="text-xl font-medium mb-2">教育资源</h3>
+                    <p class="text-gray-600">基于最新研究的干预策略和教育资源，帮助家庭和教育者更好地支持自闭症儿童。</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 我们的愿景 -->
+        <section class="content-section">
+            <h2 class="section-title">我们的愿景</h2>
+            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                <p class="text-lg italic">
+                    "我们致力于创造一个更加包容和理解的世界，每一个星童都能被看见、被倾听、被尊重，并有机会充分发挥他们的潜力。通过技术的力量，我们希望搭建起理解与表达的桥梁，让每一个特殊的灵魂都能找到与世界连接的方式。"
+                </p>
+            </div>
+        </section>
+        
+        <!-- 团队介绍部分 -->
+        <section class="content-section">
+            <h2 class="section-title">团队介绍</h2>
+            <p class="mb-8"星语助手由一群充满热情的大学生组成，他们东华大学，共同致力于为自闭症儿童及其家庭创造更美好的未来。</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="张丽" class="member-avatar">
+                    <h3 class="text-xl font-medium">张丽</h3>
+                    <p class="text-blue-600 mb-2">创始人 & 心理学家</p>
+                    <p class="text-sm text-gray-600">中国科学院心理研究所博士，十年自闭症干预经验</p>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="李强" class="member-avatar">
+                    <h3 class="text-xl font-medium">李强</h3>
+                    <p class="text-blue-600 mb-2">首席技术官</p>
+                    <p class="text-sm text-gray-600">前Google人工智能工程师，专注于自然语言处理</p>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="王芳" class="member-avatar">
+                    <h3 class="text-xl font-medium">王芳</h3>
+                    <p class="text-blue-600 mb-2">特殊教育专家</p>
+                    <p class="text-sm text-gray-600">北京师范大学特殊教育系教授，多本自闭症教育专著作者</p>
+                </div>
+                
+                <div class="team-member">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="赵明" class="member-avatar">
+                    <h3 class="text-xl font-medium">赵明</h3>
+                    <p class="text-blue-600 mb-2">用户体验设计师</p>
+                    <p class="text-sm text-gray-600">曾任苹果无障碍设计专家，关注特殊需求用户体验</p>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center">
+                <h3 class="text-xl font-semibold mb-4">顾问团队</h3>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <span class="bg-blue-100 text-blue-800 rounded-full px-4 py-2">自闭症研究专家</span>
+                    <span class="bg-blue-100 text-blue-800 rounded-full px-4 py-2">儿科医生</span>
+                    <span class="bg-blue-100 text-blue-800 rounded-full px-4 py-2">语言治疗师</span>
+                    <span class="bg-blue-100 text-blue-800 rounded-full px-4 py-2">职业治疗师</span>
+                    <span class="bg-blue-100 text-blue-800 rounded-full px-4 py-2">家长代表</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 联系与支持 -->
+        <section class="content-section">
+            <h2 class="section-title">联系与支持</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-medium mb-3">联系方式</h3>
+                    <p class="flex items-center mb-3"><i class="fas fa-envelope w-6 text-blue-500"></i> misdhu@gmail.com</p>
+                    <p class="flex items-center mb-3"><i class="fas fa-phone w-6 text-blue-500"></i> 400-888-9999</p>
+                    <p class="flex items-center mb-3"><i class="fas fa-map-marker-alt w-6 text-blue-500"></i> 上海市长宁区延安西路1882号东华大学</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- 返回按钮 -->
+    <a href="splash.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 可以在这里添加页面加载后的动画效果
+            const sections = document.querySelectorAll('.content-section');
+            
+            // 简单的滚动显示动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                section.style.opacity = 0;
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

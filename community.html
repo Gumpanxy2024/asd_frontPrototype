@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>社区问答 - 星童伙伴</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="css/common.css" rel="stylesheet">
+    <style>
+        .community-post {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem 0;
+        }
+        .community-post:last-child {
+            border-bottom: none;
+        }
+        .post-reactions {
+            display: flex;
+            gap: 1rem;
+        }
+        .reaction {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #718096;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .reaction:hover {
+            color: #4a5568;
+        }
+        .reaction.active {
+            color: #3182ce;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-advice {
+            background-color: #e6fffa;
+            color: #319795;
+        }
+        .tag-question {
+            background-color: #ebf4ff;
+            color: #3182ce;
+        }
+        .tag-sharing {
+            background-color: #faf5ff;
+            color: #805ad5;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            font-weight: 600;
+        }
+        .filter-button {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-button.active {
+            background-color: #3182ce;
+            color: white;
+        }
+        .filter-button:not(.active) {
+            background-color: #edf2f7;
+            color: #4a5568;
+        }
+        .filter-button:not(.active):hover {
+            background-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <div id="navbar-container"></div>
+    
+    <div class="p-6 max-w-6xl mx-auto">
+        <!-- 页面标题区域 -->
+        <div class="header-section mb-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">社区问答</h2>
+                <button class="bg-white text-blue-600 border border-white rounded-lg px-4 py-2 flex items-center hover:bg-blue-50 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>发布问题
+                </button>
+            </div>
+            <p class="mt-2 opacity-90">分享经验、交流心得，共同关注孩子的情绪与睡眠</p>
+        </div>
+        
+        <div class="app-card mb-6">
+            <div class="flex items-center">
+                <div class="relative flex-grow">
+                    <input type="text" placeholder="搜索与情绪、睡眠相关的问题..." class="w-full p-3 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                </div>
+                <div class="ml-4">
+                    <select class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500">
+                        <option value="latest">最新发布</option>
+                        <option value="popular">热门讨论</option>
+                        <option value="unanswered">等待回答</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mt-4">
+                <button class="filter-button active">全部</button>
+                <button class="filter-button">情绪管理</button>
+                <button class="filter-button">睡眠问题</button>
+                <button class="filter-button">经验分享</button>
+                <button class="filter-button">专家建议</button>
+            </div>
+        </div>
+        
+        <div class="app-card p-0">
+            <!-- 社区帖子1 -->
+            <div class="community-post p-5">
+                <div class="flex">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="avatar bg-blue-100 text-blue-500">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">如何帮助孩子应对学校社交场景中的焦虑？</h3>
+                                <div class="flex items-center text-sm text-gray-500 mt-1">
+                                    <span>王妈妈</span>
+                                    <span class="mx-2">·</span>
+                                    <span>2小时前</span>
+                                    <span class="mx-2">·</span>
+                                    <span class="tag tag-question">情绪管理</span>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-700 mt-3">
+                            我的孩子小明（7岁）最近在学校的团体活动中表现出很强的焦虑。尤其是当需要和其他孩子一起参与游戏或者小组活动时，他会变得非常紧张，有时甚至会哭闹着不想去学校。老师告诉我他在课堂上很安静，但几乎不和其他孩子互动。
+                            
+                            我尝试过提前告诉他学校会有什么活动，也试过用角色扮演的方式和他一起模拟学校场景，但效果不是很明显。有没有家长遇到过类似的情况？或者有什么有效的方法可以帮助孩子克服社交焦虑？
+                        </p>
+                        <div class="mt-4 flex justify-between">
+                            <div class="post-reactions">
+                                <div class="reaction">
+                                    <i class="far fa-comment"></i>
+                                    <span>8条回复</span>
+                                </div>
+                                <div class="reaction">
+                                    <i class="far fa-heart"></i>
+                                    <span>12</span>
+                                </div>
+                                <div class="reaction">
+                                    <i class="far fa-bookmark"></i>
+                                    <span>收藏</span>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="far fa-comment mr-1"></i>回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 社区帖子2 -->
+            <div class="community-post p-5">
+                <div class="flex">
+                    <div class="flex-shrink-0 mr-4">
+                        <div class="avatar bg-green-100 text-green-500">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">【经验分享】使用视觉日程表的方法与技巧</h3>
+                                <div class="flex items-center text-sm text-gray-500 mt-1">
+                                    <span>张老师（特教专家）</span>
+                                    <span class="mx-2">·</span>
+                                    <span>昨天</span>
+                                    <span class="mx-2">·</span>
+                                    <span class="tag tag-sharing">经验分享</span>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-bookmark"></i>
+                            </button>
+                        </div>
+                        <p class="text-gray-700 mt-3">
+                            视觉日程表是帮助自闭症谱系障碍儿童理解和预测日常活动的强大工具。在我10年的特教经验中，我发现正确使用视觉日程表可以显著减少孩子的焦虑并提高他们的独立性。
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            以下是一些实用技巧：
+                        </p>
+                        <ol class="list-decimal ml-5 mt-2 text-gray-700">
+                            <li>从简单开始，只包含3-4个主要活动</li>
+                            <li>使用孩子熟悉的图片或符号</li>
+                            <li>保持一致性，每天在相同时间更新日程表</li>
+                            <li>让孩子参与制作过程，增加他们的参与感</li>
+                        </ol>
+                        <div class="mt-4 flex justify-between">
+                            <div class="post-reactions">
+                                <div class="reaction">
+                                    <i class="far fa-comment"></i>
+                                    <span>5条回复</span>
+                                </div>
+                                <div class="reaction">
+                                    <i class="far fa-heart"></i>
+                                    <span>8</span>
+                                </div>
+                                <div class="reaction">
+                                    <i class="far fa-bookmark"></i>
+                                    <span>收藏</span>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <i class="far fa-comment mr-1"></i>回复
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

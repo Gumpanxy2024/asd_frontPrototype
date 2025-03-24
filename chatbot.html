@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI助手对话 - 星童伙伴</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f8fafc;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+        .history-sidebar {
+            width: 280px;
+            background-color: #f1f5f9;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .history-header {
+            padding: 15px;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: white;
+        }
+        .history-list {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .history-item:hover {
+            background-color: #e2e8f0;
+        }
+        .history-item.active {
+            background-color: #e2e8f0;
+            border-left: 3px solid #4299e1;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            height: 100vh;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+        .message-content {
+            padding: 12px 16px;
+            border-radius: 18px;
+        }
+        .user-message {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .user-message .message-content {
+            background-color: #4299e1;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        .ai-message {
+            align-self: flex-start;
+        }
+        .ai-message .message-content {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            border-bottom-left-radius: 4px;
+        }
+        .citation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8fafc;
+            border-left: 3px solid #a0aec0;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        .footnote {
+            font-size: 0.8em;
+            color: #718096;
+            margin-top: 5px;
+        }
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+        .new-chat-btn {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 历史对话侧边栏 -->
+        <div class="history-sidebar">
+            <div class="history-header">
+                对话历史
+            </div>
+            <button class="new-chat-btn bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
+                <i class="fas fa-plus mr-2"></i>新建对话
+            </button>
+            <div class="history-list">
+                <div class="history-item active">
+                    <div class="text-sm font-medium truncate">小星的社交技能训练</div>
+                    <div class="text-xs text-gray-500 mt-1 truncate">关于分享玩具的对话</div>
+                    <div class="text-xs text-gray-400 mt-1">2025年3月20日</div>
+                </div>
+                <div class="history-item">
+                    <div class="text-sm font-medium truncate">表达情绪的方法</div>
+                    <div class="text-xs text-gray-500 mt-1 truncate">情绪卡片使用指南</div>
+                    <div class="text-xs text-gray-400 mt-1">2025年3月18日</div>
+                </div>
+                <div class="history-item">
+                    <div class="text-sm font-medium truncate">感觉过载应对策略</div>
+                    <div class="text-xs text-gray-500 mt-1 truncate">在公共场所的应对方法</div>
+                    <div class="text-xs text-gray-400 mt-1">2025年3月15日</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天主界面 -->
+        <div class="chat-container">
+            <div class="chat-messages">
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>你好！我是星童AI助手。今天我能为你和小星做些什么呢？</p>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">09:15</div>
+                </div>
+                <div class="message user-message">
+                    <div class="message-content">
+                        <p>小星今天上学时遇到了一些困难，他不知道如何和同学分享玩具。</p>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 text-right">09:16</div>
+                </div>
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>我理解这种情况对小星来说可能很困难。分享行为对很多孩子都具有挑战性，对有自闭症的孩子尤其如此。</p>
+                        <p class="mt-2">我们可以尝试一些视觉辅助和角色扮演来帮助他理解分享的概念。我可以为你提供一些简单的视觉卡和社交故事来帮助小星练习。</p>
+                        
+                        <div class="citation">
+                            "视觉支持和社交故事是帮助自闭症谱系障碍儿童理解社交互动的有效工具。这些工具提供了明确的视觉线索，帮助孩子更好地理解抽象的社交概念。"<sup>[1]</sup>
+                        </div>
+                        <div class="footnote">
+                            [1] Carol Gray, 《社交故事™:帮助自闭症儿童理解社交情境》, 2018
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">09:17</div>
+                </div>
+                <div class="message user-message">
+                    <div class="message-content">
+                        <p>这是个好主意，请给我一些具体的方法。</p>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1 text-right">09:18</div>
+                </div>
+                <div class="message ai-message">
+                    <div class="message-content">
+                        <p>以下是几种可以帮助小星理解分享的方法：</p>
+                        <ol class="mt-2 ml-5 list-decimal">
+                            <li>使用计时器：告诉小星他可以玩玩具5分钟，然后需要分享给朋友5分钟。可视化的计时器能帮助他理解"轮流"的概念。</li>
+                            <li>社交故事：创建一个简单的故事，描述分享的过程和好处。可以使用小星熟悉的角色或他自己作为主角。</li>
+                            <li>示范行为：在家里与小星玩耍时，示范如何分享玩具和轮流使用。</li>
+                        </ol>
+                        <p class="mt-2">需要我为这些方法提供更详细的指导吗？</p>
+                        
+                        <div class="citation">
+                            "结构化的教学方法如使用视觉计时器和轮流系统，可以明确地展示'我的回合'和'你的回合'的概念，减少社交互动中的不确定性。"<sup>[2]</sup>
+                        </div>
+                        <div class="citation">
+                            "模仿和示范是自闭症儿童学习社交技能的重要学习方式。家长作为榜样，展示正面的社交行为，孩子会通过观察学习。"<sup>[3]</sup>
+                        </div>
+                        <div class="footnote">
+                            [2] Michelle Garcia Winner, 《社交思考：对自闭症儿童的社交交流训练》, 2021<br>
+                            [3] 美国儿科学会, 《支持自闭症谱系障碍儿童的社会性发展指南》, 2023
+                        </div>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-1">09:20</div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="flex-grow">
+                    <input type="text" placeholder="输入消息..." class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="flex items-center ml-2">
+                    <button class="p-3 bg-gray-100 rounded-full hover:bg-gray-200 mr-2" title="Record">
+                        <i class="fas fa-microphone text-gray-600"></i>
+                    </button>
+                    <button class="p-3 bg-blue-600 rounded-full hover:bg-blue-700" title="Send Message">
+                        <i class="fas fa-paper-plane text-white"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
