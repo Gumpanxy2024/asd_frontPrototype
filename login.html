@@ -34,7 +34,7 @@
                 <h1 class="text-3xl font-bold text-blue-600">星语助手</h1>
                 <p class="text-gray-500 mt-2">陪伴孩子健康成长</p>
             </div>
-            <form>
+            <form id="login-form">
                 <div class="mb-4">
                     <label class="block text-gray-700 text-sm font-medium mb-2" for="username">
                         用户名/邮箱
@@ -51,17 +51,89 @@
                     </p>
                 </div>
                 <div class="flex items-center justify-between mb-4">
-                    <button class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-8 rounded focus:outline-none focus:shadow-outline w-full transition duration-300" type="button">
+                    <button id="login-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-8 rounded focus:outline-none focus:shadow-outline w-full transition duration-300" type="button">
                         登录
                     </button>
                 </div>
                 <div class="text-center">
                     <p class="text-gray-600 text-sm">
-                        还没有账号? <a class="text-blue-600 hover:text-blue-800" href="#">立即注册</a>
+                        还没有账号? <a id="register-link" class="text-blue-600 hover:text-blue-800" href="#">立即注册</a>
                     </p>
                 </div>
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否已经登录
+            const userLoginInfo = localStorage.getItem('userLoginInfo');
+            if (userLoginInfo) {
+                // 已登录时重定向到个人信息页面或主页
+                const userProfile = localStorage.getItem('userProfile');
+                if (userProfile) {
+                    window.location.href = 'home.html';
+                } else {
+                    window.location.href = 'personal_information.html';
+                }
+                return;
+            }
+
+            // 登录按钮点击事件
+            document.getElementById('login-btn').addEventListener('click', function() {
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                
+                if (!username || !password) {
+                    alert('用户名和密码不能为空');
+                    return;
+                }
+                
+                // 实际应用中这里应该与后端进行验证
+                // 这里仅模拟登录成功，存储登录信息
+                const loginInfo = {
+                    username: username,
+                    loginTime: new Date().toISOString(),
+                    isLoggedIn: true
+                };
+                
+                localStorage.setItem('userLoginInfo', JSON.stringify(loginInfo));
+                
+                // 检查是否已有个人信息
+                const userProfile = localStorage.getItem('userProfile');
+                if (userProfile) {
+                    // 有个人信息则直接进入主页
+                    window.location.href = 'home.html';
+                } else {
+                    // 没有个人信息则先进入个人信息填写页面
+                    window.location.href = 'personal_information.html';
+                }
+            });
+            
+            // 注册链接点击事件
+            document.getElementById('register-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // 简单模拟注册（实际应用中应该跳转到注册页面或显示注册表单）
+                const username = prompt('请输入用户名');
+                if (username) {
+                    const password = prompt('请设置密码');
+                    if (password) {
+                        alert('注册成功！请登录');
+                        document.getElementById('username').value = username;
+                        document.getElementById('password').focus();
+                    }
+                }
+            });
+            
+            // 表单回车提交
+            document.getElementById('login-form').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('login-btn').click();
+                }
+            });
+        });
+    </script>
 </body>
 </html>

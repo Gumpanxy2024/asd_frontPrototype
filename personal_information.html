@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星语助手 - 个人信息与属性</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4299e1 0%, #fef3c7 100%);
+            position: relative;
+        }
+        
+        /* 背景装饰元素 */
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+        }
+        
+        .bg-circle1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .bg-circle2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -150px;
+        }
+        
+        .main-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .content-card {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .content-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .interests-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .interest-tag {
+            background-color: #e2e8f0;
+            color: #2d3748;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .interest-tag:hover {
+            background-color: #cbd5e0;
+        }
+        
+        .interest-tag i {
+            margin-left: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .btn {
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .version-info {
+            position: fixed;
+            bottom: 1rem;
+            right: 1.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration bg-circle1"></div>
+    <div class="bg-decoration bg-circle2"></div>
+    
+    <div class="main-container">
+        <div class="header">
+            <h1>个人信息与属性设置</h1>
+            <p class="text-gray-600 mt-2">请填写以下信息，帮助我们更好地了解您和孩子的需求</p>
+        </div>
+        
+        <!-- 角色选择 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-user-tag mr-2 text-blue-500"></i>角色选择
+            </h2>
+            <div class="form-group">
+                <label class="form-label">您的身份是？</label>
+                <div class="flex gap-4 mt-3">
+                    <div class="flex items-center">
+                        <input type="radio" id="role-teacher" name="role" value="teacher" class="w-5 h-5 text-blue-600">
+                        <label for="role-teacher" class="ml-2 text-gray-700 cursor-pointer">
+                            <i class="fas fa-chalkboard-teacher mr-2 text-blue-500"></i>教师
+                        </label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="role-parent" name="role" value="parent" class="w-5 h-5 text-blue-600">
+                        <label for="role-parent" class="ml-2 text-gray-700 cursor-pointer">
+                            <i class="fas fa-house-user mr-2 text-green-500"></i>家长
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 孤独症孩童患病阶段划分 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-chart-line mr-2 text-purple-500"></i>孤独症评估水平
+            </h2>
+            <div class="form-group">
+                <label class="form-label">孩子目前的功能水平：</label>
+                <select id="autism-level" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 bg-white" aria-label="孩子的功能水平">
+                    <option value="">-- 请选择 --</option>
+                    <option value="high-verbal">高功能 - 具备良好语言能力</option>
+                    <option value="high-nonverbal">高功能 - 语言能力有限</option>
+                    <option value="medium">中等功能 - 需要适度支持</option>
+                    <option value="low-supportive">低功能 - 需要大量支持</option>
+                    <option value="low-intensive">低功能 - 需要密集支持</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">主要挑战领域（可多选）：</label>
+                <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-social" name="challenges" value="social" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-social" class="ml-2 text-gray-700">社交互动</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-communication" name="challenges" value="communication" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-communication" class="ml-2 text-gray-700">语言沟通</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-behavior" name="challenges" value="behavior" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-behavior" class="ml-2 text-gray-700">行为模式</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-sensory" name="challenges" value="sensory" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-sensory" class="ml-2 text-gray-700">感官敏感性</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-attention" name="challenges" value="attention" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-attention" class="ml-2 text-gray-700">注意力集中</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="challenge-motor" name="challenges" value="motor" class="w-4 h-4 text-blue-600">
+                        <label for="challenge-motor" class="ml-2 text-gray-700">运动技能</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 孩童个人兴趣记录 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-heart mr-2 text-red-500"></i>孩童个人兴趣记录
+            </h2>
+            <div class="form-group">
+                <label class="form-label">添加孩子的兴趣爱好：</label>
+                <div class="flex">
+                    <input type="text" id="interest-input" class="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="例如：恐龙、数字、音乐...">
+                    <button id="add-interest" class="ml-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none">添加</button>
+                </div>
+                
+                <div class="interests-tags mt-4" id="interests-container">
+                    <!-- 兴趣标签将通过JS动态添加 -->
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">特别喜欢的活动或事物：</label>
+                <textarea id="favorite-activities" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 h-32" placeholder="请描述孩子特别喜欢的活动、事物或特殊兴趣，这将帮助我们提供更个性化的互动体验..."></textarea>
+            </div>
+        </div>
+        
+        <!-- 保存按钮 -->
+        <div class="flex justify-center mt-6 mb-10">
+            <button id="save-btn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold shadow-md transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-save mr-2"></i>保存信息
+            </button>
+            <button id="back-btn" class="btn bg-white hover:bg-gray-100 text-blue-500 font-semibold border border-blue-200 shadow-md transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg ml-4">
+                <i class="fas fa-arrow-left mr-2"></i>返回
+            </button>
+        </div>
+    </div>
+    
+    <div class="version-info">Version 1.0.0</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const interestInput = document.getElementById('interest-input');
+            const addInterestBtn = document.getElementById('add-interest');
+            const interestsContainer = document.getElementById('interests-container');
+            const saveBtn = document.getElementById('save-btn');
+            const backBtn = document.getElementById('back-btn');
+            
+            // 检查用户是否已登录
+            const userLoginInfo = localStorage.getItem('userLoginInfo');
+            if (!userLoginInfo) {
+                // 如果用户未登录，重定向到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 存储用户信息的对象
+            let userInfo = {
+                role: '',
+                autismLevel: '',
+                challenges: [],
+                interests: [],
+                favoriteActivities: ''
+            };
+            
+            // 角色相关UI控制
+            function handleRoleChange() {
+                const roleTeacher = document.getElementById('role-teacher');
+                const roleParent = document.getElementById('role-parent');
+                const autismLevelCard = document.querySelector('.content-card:nth-child(3)'); // 孤独症评估部分
+                const interestsCard = document.querySelector('.content-card:nth-child(4)'); // 兴趣记录部分
+                
+                if (roleTeacher.checked) {
+                    // 教师角色 - 隐藏孩子相关信息
+                    userInfo.role = 'teacher';
+                    autismLevelCard.style.display = 'none';
+                    interestsCard.style.display = 'none';
+                } else if (roleParent.checked) {
+                    // 家长角色 - 显示所有信息
+                    userInfo.role = 'parent';
+                    autismLevelCard.style.display = 'block';
+                    interestsCard.style.display = 'block';
+                }
+            }
+            
+            // 给角色选择添加事件
+            document.getElementById('role-teacher').addEventListener('change', handleRoleChange);
+            document.getElementById('role-parent').addEventListener('change', handleRoleChange);
+            
+            // 添加兴趣标签
+            addInterestBtn.addEventListener('click', function() {
+                const interest = interestInput.value.trim();
+                if (interest !== '') {
+                    addInterestTag(interest);
+                    interestInput.value = '';
+                    interestInput.focus();
+                }
+            });
+            
+            // 按回车键添加兴趣标签
+            interestInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    addInterestBtn.click();
+                    e.preventDefault();
+                }
+            });
+            
+            // 添加兴趣标签函数
+            function addInterestTag(interest) {
+                if (!userInfo.interests.includes(interest)) {
+                    userInfo.interests.push(interest);
+                    
+                    const tag = document.createElement('div');
+                    tag.className = 'interest-tag';
+                    tag.innerHTML = `
+                        ${interest}
+                        <i class="fas fa-times-circle ml-2" data-interest="${interest}"></i>
+                    `;
+                    interestsContainer.appendChild(tag);
+                    
+                    // 添加删除事件
+                    tag.querySelector('i').addEventListener('click', function() {
+                        const interestToRemove = this.getAttribute('data-interest');
+                        userInfo.interests = userInfo.interests.filter(i => i !== interestToRemove);
+                        this.parentElement.remove();
+                    });
+                }
+            }
+            
+            // 保存信息
+            saveBtn.addEventListener('click', function() {
+                // 收集角色信息
+                const roleTeacher = document.getElementById('role-teacher');
+                const roleParent = document.getElementById('role-parent');
+                if (roleTeacher.checked) userInfo.role = 'teacher';
+                if (roleParent.checked) userInfo.role = 'parent';
+                
+                // 收集功能水平
+                userInfo.autismLevel = document.getElementById('autism-level').value;
+                
+                // 收集挑战领域
+                userInfo.challenges = [];
+                document.querySelectorAll('input[name="challenges"]:checked').forEach(checkbox => {
+                    userInfo.challenges.push(checkbox.value);
+                });
+                
+                // 收集特别喜欢的活动
+                userInfo.favoriteActivities = document.getElementById('favorite-activities').value;
+                
+                // 保存到localStorage
+                localStorage.setItem('userProfile', JSON.stringify(userInfo));
+                
+                // 显示保存成功提示
+                alert('信息保存成功！');
+                
+                // 跳转到主页
+                window.location.href = 'home.html';
+            });
+            
+            // 返回按钮
+            backBtn.addEventListener('click', function() {
+                window.location.href = 'home.html';
+            });
+            
+            // 加载已保存的信息（如果有）
+            const savedUserInfo = localStorage.getItem('userProfile');
+            if (savedUserInfo) {
+                userInfo = JSON.parse(savedUserInfo);
+                
+                // 填充角色
+                if (userInfo.role === 'teacher') document.getElementById('role-teacher').checked = true;
+                if (userInfo.role === 'parent') document.getElementById('role-parent').checked = true;
+                
+                // 应用角色相关UI控制
+                handleRoleChange();
+                
+                // 填充功能水平
+                document.getElementById('autism-level').value = userInfo.autismLevel;
+                
+                // 填充挑战领域
+                userInfo.challenges.forEach(challenge => {
+                    const checkbox = document.getElementById(`challenge-${challenge}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+                
+                // 填充兴趣标签
+                userInfo.interests.forEach(interest => {
+                    addInterestTag(interest);
+                });
+                
+                // 填充特别喜欢的活动
+                document.getElementById('favorite-activities').value = userInfo.favoriteActivities;
+            } else {
+                // 默认选中家长角色并应用相关UI控制
+                document.getElementById('role-parent').checked = true;
+                handleRoleChange();
+            }
+        });
+    </script>
+</body>
+</html>
