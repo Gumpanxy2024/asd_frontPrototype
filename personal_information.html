@@ -128,14 +128,6 @@
             transition: all 0.3s ease;
         }
         
-        .version-info {
-            position: fixed;
-            bottom: 1rem;
-            right: 1.5rem;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -162,7 +154,6 @@
 <body>
     <!-- 背景装饰 -->
     <div class="bg-decoration bg-circle1"></div>
-    <div class="bg-decoration bg-circle2"></div>
     
     <div class="main-container">
         <div class="header">
@@ -191,6 +182,46 @@
                         </label>
                     </div>
                 </div>
+            </div>
+        </div>
+
+
+        <!-- 孤独症孩童个人信息和家长称呼 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-user-tag mr-2 text-blue-500"></i>个人信息  
+            </h2>
+            <div class="form-group">
+                <label class="form-label">孩子的姓名：</label>
+                <input type="text" id="child-name" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="请输入孩子的姓名">
+            </div>
+            
+            <div class="form-group mt-4">
+                <label class="form-label">孩子的性别：</label>
+                <div class="flex gap-4 mt-2">
+                    <div class="flex items-center">
+                        <input type="radio" id="gender-male" name="gender" value="male" class="w-5 h-5 text-blue-600">
+                        <label for="gender-male" class="ml-2 text-gray-700 cursor-pointer">
+                            <i class="fas fa-mars mr-2 text-blue-500"></i>男孩
+                        </label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="gender-female" name="gender" value="female" class="w-5 h-5 text-blue-600">
+                        <label for="gender-female" class="ml-2 text-gray-700 cursor-pointer">
+                            <i class="fas fa-venus mr-2 text-pink-500"></i>女孩
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group mt-4">
+                <label class="form-label">孩子的年龄：</label>
+                <input type="number" id="child-age" min="1" max="18" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="请输入孩子的年龄">
+            </div>
+            
+            <div class="form-group mt-4">
+                <label class="form-label">我们如何称呼您：</label>
+                <input type="text" id="parent-title" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="例如：妈妈、爸爸、老师等">
             </div>
         </div>
         
@@ -275,8 +306,6 @@
             </button>
         </div>
     </div>
-    
-    <div class="version-info">Version 1.0.0</div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

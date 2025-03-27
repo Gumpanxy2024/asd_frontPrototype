@@ -70,6 +70,26 @@
             </div>
         </div>
 
+        <!-- 快捷操作按钮 -->
+        <div class="flex flex-wrap gap-4 mb-8">
+            <a href="DailySchedule.html" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg shadow-md flex items-center justify-center">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                <span>日程管理</span>
+            </a>
+            <a href="diary.html" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg shadow-md flex items-center justify-center">
+                <i class="fas fa-book mr-2"></i>
+                <span>情绪日记</span>
+            </a>
+            <a href="chatbot.html" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white py-3 px-4 rounded-lg shadow-md flex items-center justify-center">
+                <i class="fas fa-comments mr-2"></i>
+                <span>AI助手</span>
+            </a>
+            <a href="training.html" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg shadow-md flex items-center justify-center">
+                <i class="fas fa-dumbbell mr-2"></i>
+                <span>互动训练</span>
+            </a>
+        </div>
+
         <div class="grid grid-cols-2 gap-6">
             <div class="bg-white rounded-lg shadow-sm p-5">
                 <div class="flex justify-between items-center mb-4">
@@ -95,11 +115,6 @@
                             <p class="text-gray-500 text-sm">昨天 16:40</p>
                         </div>
                     </div>
-                    <div class="flex items-start">
-                        <div class="bg-purple-100 p-2 rounded-lg mr-3">
-                            <i class="fas fa-medal text-purple-500"></i>
-                        </div>
-                    </div>
                 </div>
             </div>
             <div class="bg-white rounded-lg shadow-sm p-5">
@@ -114,7 +129,7 @@
                         </div>
                         <div>
                             <p class="text-gray-800 font-medium">如何帮助孩子更好表达情绪?</p>
-                            <p class="text-gray-500 text-sm">专家文章 · 10分钟阅读</p>
+                            <p class="text-gray-500 text-sm">社区热门 </p>
                         </div>
                     </div>
                     <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
@@ -123,18 +138,58 @@
                         </div>
                         <div>
                             <p class="text-gray-800 font-medium">视觉提示卡的使用技巧</p>
-                            <p class="text-gray-500 text-sm">视频教程 · 8分钟</p>
+                            <p class="text-gray-500 text-sm">社区热门</p>
                         </div>
                     </div>
-                    <div class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer">
-                        <div class="bg-blue-100 p-2 rounded-lg mr-3">
-                            <i class="fas fa-users text-blue-500"></i>
-                        </div>
-                        <div>
-                            <p class="text-gray-800 font-medium">线上家长交流会</p>
-                            <p class="text-gray-500 text-sm">本周六 19:30-21:00</p>
-                        </div>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium text-gray-800">今日日程</h3>
+                    <a href="DailySchedule.html" class="text-blue-600 text-sm hover:text-blue-800">管理日程</a>
+                </div>
+                <div id="home-today-schedule" class="space-y-4">
+                    <div class="text-center text-gray-500 py-4" id="home-no-schedule">
+                        今天没有安排日程
                     </div>
+                    <!-- 日程内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow-sm p-5">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium text-gray-800">数据分析报告</h3>
+                    <a href="report.html" class="text-blue-600 text-sm hover:text-blue-800">查看报告</a>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-blue-50 p-3 rounded-lg">
+                        <h4 class="font-medium text-gray-800 mb-2">情绪稳定指数</h4>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-4 mr-2">
+                                <div class="bg-blue-400 h-4 rounded-full" style="width: 76%"></div>
+                            </div>
+                            <span class="text-sm font-medium">76%</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">较上月 <span class="text-green-500">↑12</span></p>
+                    </div>
+                    
+                    <div class="bg-purple-50 p-3 rounded-lg">
+                        <h4 class="font-medium text-gray-800 mb-2">睡眠质量评分</h4>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-4 mr-2">
+                                <div class="bg-purple-400 h-4 rounded-full" style="width: 83%"></div>
+                            </div>
+                            <span class="text-sm font-medium">83%</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">较上月 <span class="text-green-500">↑5</span></p>
+                    </div>
+                </div>
+                <div class="mt-3 text-center">
+                    <p class="text-sm text-gray-600">查看完整报告了解更多详细数据分析</p>
+                    <div class="flex justify-center mt-2 fade-in">
+                        <span class="text-xs text-gray-500">数据更新于: 2025年3月26日</span>
+                    </div>
+                </div>
+
                 </div>
             </div>
         </div>
@@ -170,6 +225,103 @@
                 const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
                 const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 ${weekdays[now.getDay()]}`;
                 dateElem.textContent = `今天是 ${dateStr}`;
+            }
+            
+            // 加载并显示今日日程
+            loadTodaySchedule();
+            
+            function loadTodaySchedule() {
+                const homeTodaySchedule = document.getElementById('home-today-schedule');
+                const homeNoSchedule = document.getElementById('home-no-schedule');
+                
+                // 获取今天的日期字符串 (YYYY-MM-DD)
+                const today = new Date();
+                const todayStr = formatDateForInput(today);
+                
+                // 从localStorage获取日程
+                let schedules = [];
+                const savedSchedules = localStorage.getItem('schedules');
+                if (savedSchedules) {
+                    schedules = JSON.parse(savedSchedules);
+                }
+                
+                // 过滤出今天的日程
+                const todaySchedules = schedules.filter(schedule => schedule.date === todayStr);
+                
+                if (todaySchedules.length === 0) {
+                    homeNoSchedule.style.display = 'block';
+                    return;
+                } else {
+                    homeNoSchedule.style.display = 'none';
+                    
+                    // 清空当前内容（除了no-schedule提示）
+                    while (homeTodaySchedule.firstChild && homeTodaySchedule.firstChild !== homeNoSchedule) {
+                        homeTodaySchedule.removeChild(homeTodaySchedule.firstChild);
+                    }
+                    
+                    // 按时间排序
+                    todaySchedules.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                    
+                    // 只显示最多3个日程
+                    const displaySchedules = todaySchedules.slice(0, 3);
+                    
+                    // 添加日程
+                    displaySchedules.forEach(schedule => {
+                        const scheduleElem = document.createElement('div');
+                        scheduleElem.className = 'flex items-start';
+                        
+                        // 根据日程类型设置不同的图标和颜色
+                        let iconClass = 'fa-calendar-check';
+                        let bgColorClass = 'bg-blue-100';
+                        let textColorClass = 'text-blue-500';
+                        
+                        if (schedule.type === 'therapy') {
+                            iconClass = 'fa-stethoscope';
+                            bgColorClass = 'bg-green-100';
+                            textColorClass = 'text-green-500';
+                        } else if (schedule.type === 'fun') {
+                            iconClass = 'fa-gamepad';
+                            bgColorClass = 'bg-yellow-100';
+                            textColorClass = 'text-yellow-500';
+                        } else if (schedule.type === 'important') {
+                            iconClass = 'fa-exclamation-circle';
+                            bgColorClass = 'bg-red-100';
+                            textColorClass = 'text-red-500';
+                        }
+                        
+                        scheduleElem.innerHTML = `
+                            <div class="${bgColorClass} p-2 rounded-lg mr-3">
+                                <i class="fas ${iconClass} ${textColorClass}"></i>
+                            </div>
+                            <div>
+                                <p class="text-gray-800">${schedule.title}</p>
+                                <p class="text-gray-500 text-sm">${schedule.startTime} - ${schedule.endTime || '未设置'}</p>
+                            </div>
+                        `;
+                        
+                        homeTodaySchedule.insertBefore(scheduleElem, homeNoSchedule);
+                    });
+                    
+                    // 如果有更多日程，添加查看更多提示
+                    if (todaySchedules.length > 3) {
+                        const moreElem = document.createElement('div');
+                        moreElem.className = 'text-center mt-2';
+                        moreElem.innerHTML = `
+                            <a href="DailySchedule.html" class="text-blue-500 text-sm hover:underline">
+                                查看更多（还有${todaySchedules.length - 3}项）
+                            </a>
+                        `;
+                        homeTodaySchedule.insertBefore(moreElem, homeNoSchedule);
+                    }
+                }
+            }
+            
+            // 格式化日期为YYYY-MM-DD格式
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
             }
         });
     </script>

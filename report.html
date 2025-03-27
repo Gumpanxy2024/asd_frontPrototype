@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据报告 - 星语助手</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #4299e1 0%, #fef3c7 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+        
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .report-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        .report-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .report-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            width: 100%;
+            position: relative;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 250px;
+            }
+            
+            .chart-container.chart-sm {
+                height: 200px;
+            }
+        }
+        
+        .chart-container.chart-sm {
+            height: 220px;
+        }
+        
+        .chart-container.chart-xs {
+            height: 180px;
+        }
+        
+        .stat-card {
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: -1;
+        }
+        
+        .bg-circle1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            left: -150px;
+        }
+        
+        .bg-circle2 {
+            width: 400px;
+            height: 400px;
+            bottom: -200px;
+            right: -200px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration bg-circle1"></div>
+    <div class="bg-decoration bg-circle2"></div>
+    
+    <div class="report-container">
+        <!-- 导航栏 -->
+        <nav class="app-navbar mb-6">
+            <div class="max-w-6xl mx-auto flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="./assets/logo.png" alt="星语助手" class="h-8 mr-3">
+                    <span class="font-bold text-xl text-gray-800">星语助手</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <a href="home.html" class="nav-link">
+                        <i class="fas fa-home mr-2"></i>首页
+                    </a>
+                    <a href="moodtrend.html" class="nav-link">
+                        <i class="fas fa-chart-line mr-2"></i>情绪分析
+                    </a>
+                    <a href="diary.html" class="nav-link">
+                        <i class="fas fa-book mr-2"></i>成长日记
+                    </a>
+                    <a href="chatbot.html" class="nav-link">
+                        <i class="fas fa-robot mr-2"></i>AI助手
+                    </a>
+                    <a href="report.html" class="nav-link active">
+                        <i class="fas fa-file-alt mr-2"></i>数据报告
+                    </a>
+                </div>
+                <div>
+                    <button class="bg-gray-100 p-2 rounded-full text-gray-600 hover:bg-gray-200" title="用户资料">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="report-header">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">星语助手数据分析报告</h1>
+            <p class="text-gray-600">为李小星生成的全面发展分析 - 2023年11月</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <button class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded-full text-sm flex items-center">
+                    <i class="fas fa-download mr-2"></i>导出报告
+                </button>
+            </div>
+        </div>
+        
+        <!-- 总览部分 -->
+        <div class="report-section fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800 mb-2 md:mb-0"><i class="fas fa-star text-yellow-500 mr-2"></i>总体进展概览</h2>
+                <select id="timeRange" class="border rounded p-1 text-sm" aria-label="选择时间范围">
+                    <option value="week">过去一周</option>
+                    <option value="month" selected>过去一个月</option>
+                    <option value="threeMonths">过去三个月</option>
+                </select>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                <div class="stat-card bg-blue-50 border-l-4 border-blue-400">
+                    <h3 class="text-sm font-medium text-blue-600 mb-1">AI对话参与度</h3>
+                    <p class="text-2xl font-bold text-gray-800">92%</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑8%</span></p>
+                </div>
+                <div class="stat-card bg-green-50 border-l-4 border-green-400">
+                    <h3 class="text-sm font-medium text-green-600 mb-1">互动训练参与度</h3>
+                    <p class="text-2xl font-bold text-gray-800">76</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑12</span></p>
+                </div>
+                <div class="stat-card bg-purple-50 border-l-4 border-purple-400">
+                    <h3 class="text-sm font-medium text-purple-600 mb-1">睡眠质量评分</h3>
+                    <p class="text-2xl font-bold text-gray-800">83</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑5</span></p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="overviewChart"></canvas>
+            </div>
+            <p class="text-sm text-gray-600 italic text-center">注: 此图表展示各维度数据的综合趋势，数值为相对指标</p>
+        </div>
+        
+        <!-- AI问答记录分析部分 -->
+        <div class="report-section fade-in delay-1">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-comments text-blue-500 mr-2"></i>AI对话内容分析</h2>
+            
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">主要对话主题分布</h3>
+                <div class="chart-container chart-sm">
+                    <canvas id="topicsChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">情感表达能力</h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-600">积极情绪表达</span>
+                            <span class="text-sm font-medium">85%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 85%"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mb-2 mt-4">
+                            <span class="text-sm text-gray-600">消极情绪表达</span>
+                            <span class="text-sm font-medium">67%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-orange-400 h-2.5 rounded-full" style="width: 67%"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">对话特征分析</h3>
+                    <div class="space-y-4">    
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                            <div class="flex items-start">
+                                <i class="fas fa-chart-line text-blue-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">表达复杂度</h4>
+                                    <p class="text-sm text-gray-600">对话中使用的词汇量和句子复杂度呈上升趋势，语言表达能力有明显提升。</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                            <div class="flex items-start">
+                                <i class="fas fa-users text-green-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">社交意识</h4>
+                                    <p class="text-sm text-gray-600">开始更多询问他人感受的问题，对社交规则的理解有所增强。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 情绪分析部分 -->
+        <div class="report-section fade-in delay-2">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-heart text-red-500 mr-2"></i>情绪变化分析</h2>
+            
+            <div class="chart-container">
+                <canvas id="moodChart"></canvas>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mt-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">情绪触发因素</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-red-400 rounded-full mr-2"></span>
+                            <span>不喜欢的食物 (42%)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-orange-400 rounded-full mr-2"></span>
+                            <span>环境变化 (28%)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-yellow-400 rounded-full mr-2"></span>
+                            <span>社交压力 (18%)</span>
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-blue-400 rounded-full mr-2"></span>
+                            <span>其他因素 (12%)</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">情绪持续时间</h3>
+                    <div class="chart-container chart-xs">
+                        <canvas id="emotionDurationChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">情绪调节能力</h3>
+                    <p class="text-sm text-gray-600 mb-4">相比上个月，通过自我调节平复情绪的时间缩短了27%。</p>
+                    <div class="flex items-center justify-center">
+                        <div class="relative">
+                            <svg width="120" height="120" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="#e5e7eb" stroke-width="12" />
+                                <circle cx="60" cy="60" r="54" fill="none" stroke="#3b82f6" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="84.823" stroke-linecap="round" />
+                            </svg>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <span class="text-2xl font-bold text-gray-800">75%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 睡眠分析部分 -->
+        <div class="report-section fade-in delay-3">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-moon text-indigo-500 mr-2"></i>睡眠质量分析</h2>
+            
+            <div class="chart-container">
+                <canvas id="sleepChart"></canvas>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">睡眠习惯观察</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-800">睡前常规</h4>
+                                <p class="text-sm text-gray-600">遵循固定的睡前常规(故事、轻音乐)有助于提高入睡速度，减少夜间醒来次数。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-exclamation-circle text-yellow-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-800">睡眠中断</h4>
+                                <p class="text-sm text-gray-600">周末睡眠规律变化较大，易导致周一情绪波动，建议保持相对一致的作息时间。</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <i class="fas fa-lightbulb text-blue-500 mt-1 mr-3"></i>
+                            <div>
+                                <h4 class="font-medium text-gray-800">改进建议</h4>
+                                <p class="text-sm text-gray-600">尝试使用重力毯和更暗的室内环境，可能有助于减少入睡困难。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 训练进度分析部分 -->
+        <div class="report-section fade-in delay-2">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-graduation-cap text-indigo-500 mr-2"></i>互动训练进度分析</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                <div class="stat-card bg-indigo-50 border-l-4 border-indigo-400">
+                    <h3 class="text-sm font-medium text-indigo-600 mb-1">训练任务完成率</h3>
+                    <p class="text-2xl font-bold text-gray-800">88%</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑6%</span></p>
+                </div>
+                <div class="stat-card bg-blue-50 border-l-4 border-blue-400">
+                    <h3 class="text-sm font-medium text-blue-600 mb-1">专注度评分</h3>
+                    <p class="text-2xl font-bold text-gray-800">81</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑9</span></p>
+                </div>
+                <div class="stat-card bg-green-50 border-l-4 border-green-400">
+                    <h3 class="text-sm font-medium text-green-600 mb-1">技能掌握数量</h3>
+                    <p class="text-2xl font-bold text-gray-800">14</p>
+                    <p class="text-xs text-gray-500 mt-1">较上月 <span class="text-green-500">↑3</span></p>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="trainingChart"></canvas>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">训练类型分布</h3>
+                    <div class="chart-container chart-sm">
+                        <canvas id="trainingTypeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">技能掌握进度</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-600">表情识别</span>
+                                <span class="text-sm font-medium">92%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-600">轮流对话</span>
+                                <span class="text-sm font-medium">78%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-600">社交情境应对</span>
+                                <span class="text-sm font-medium">65%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm text-gray-600">情绪调节</span>
+                                <span class="text-sm font-medium">83%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 83%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 成长日记分析部分 -->
+        <div class="report-section fade-in delay-3">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-book-reader text-yellow-500 mr-2"></i>成长日记内容分析</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">日记情感基调</h3>
+                    <div class="chart-container chart-sm">
+                        <canvas id="diaryMoodChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm h-full">
+                    <h3 class="text-lg font-medium text-gray-700 mb-3">记录主题变化</h3>
+                    <div class="chart-container chart-sm">
+                        <canvas id="diaryTopicsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm mt-6">
+                <h3 class="text-lg font-medium text-gray-700 mb-3">语言表达进步</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <h4 class="font-medium text-gray-800 mb-2">词汇量</h4>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-4 mr-2">
+                                <div class="bg-yellow-400 h-4 rounded-full" style="width: 68%"></div>
+                            </div>
+                            <span class="text-sm font-medium">68%</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">较上月增加36个新词汇</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <h4 class="font-medium text-gray-800 mb-2">句子复杂度</h4>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-4 mr-2">
+                                <div class="bg-yellow-400 h-4 rounded-full" style="width: 52%"></div>
+                            </div>
+                            <span class="text-sm font-medium">52%</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">平均句子长度增加3个字</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <h4 class="font-medium text-gray-800 mb-2">情感表达</h4>
+                        <div class="flex items-center">
+                            <div class="w-full bg-gray-200 rounded-full h-4 mr-2">
+                                <div class="bg-yellow-400 h-4 rounded-full" style="width: 75%"></div>
+                            </div>
+                            <span class="text-sm font-medium">75%</span>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-2">情感词汇使用频率提高18%</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 行动建议部分 -->
+        <div class="report-section fade-in delay-3">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4"><i class="fas fa-clipboard-list text-green-500 mr-2"></i>个性化行动建议</h2>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg h-full">
+                    <h3 class="font-medium text-blue-700 mb-2">情绪管理</h3>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                            <span>继续使用视觉提示卡辅助情绪表达</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                            <span>每天安排5分钟的深呼吸练习</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-blue-500 mt-1 mr-2"></i>
+                            <span>尝试使用压力球等触觉工具缓解焦虑</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg h-full">
+                    <h3 class="font-medium text-green-700 mb-2">社交互动</h3>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>持续使用AI助手进行对话练习</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>每周安排一次有结构的小组活动</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                            <span>使用角色扮演游戏练习社交情境应对</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-purple-50 border-l-4 border-purple-400 p-4 rounded-r-lg h-full">
+                    <h3 class="font-medium text-purple-700 mb-2">日常生活</h3>
+                    <ul class="text-sm text-gray-700 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mt-1 mr-2"></i>
+                            <span>维持固定的睡眠时间表，包括周末</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mt-1 mr-2"></i>
+                            <span>增加每天的户外活动时间至少30分钟</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check text-purple-500 mt-1 mr-2"></i>
+                            <span>通过定时提醒帮助建立日常常规</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center text-sm text-gray-500 mt-8 mb-4">
+            <p>此报告基于过去30天的数据生成，仅供参考。详细数据请咨询专业人士。</p>
+            <p class="mt-2">© 2023 星语助手 - 数据分析报告 v1.0</p>
+        </div>
+    </div>
+    
+    <script>
+        // 注意：这里是原型绘制，实际数据将从后端API获取
+        document.addEventListener('DOMContentLoaded', function() {
+            // 总览图表
+            const overviewCtx = document.getElementById('overviewChart').getContext('2d');
+            const overviewChart = new Chart(overviewCtx, {
+                type: 'line',
+                data: {
+                    labels: ['第1周', '第2周', '第3周', '第4周'],
+                    datasets: [
+                        {
+                            label: '情绪稳定性',
+                            data: [65, 68, 72, 76],
+                            borderColor: '#4299e1',
+                            backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '社交互动',
+                            data: [50, 55, 60, 68],
+                            borderColor: '#48bb78',
+                            backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '睡眠质量',
+                            data: [72, 75, 79, 83],
+                            borderColor: '#9f7aea',
+                            backgroundColor: 'rgba(159, 122, 234, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '训练完成度',
+                            data: [68, 75, 82, 88],
+                            borderColor: '#ed8936',
+                            backgroundColor: 'rgba(237, 137, 54, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '评分 (0-100)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 对话主题分布
+            const topicsCtx = document.getElementById('topicsChart').getContext('2d');
+            const topicsChart = new Chart(topicsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['恐龙知识', '太空探索', '日常活动', '情绪表达', '社交互动', '其他'],
+                    datasets: [{
+                        data: [35, 20, 15, 12, 10, 8],
+                        backgroundColor: [
+                            '#4299e1', '#48bb78', '#ecc94b', 
+                            '#ed8936', '#9f7aea', '#cbd5e0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+            
+            // 情绪变化图表
+            const moodCtx = document.getElementById('moodChart').getContext('2d');
+            const moodChart = new Chart(moodCtx, {
+                type: 'line',
+                data: {
+                    labels: ['11/1', '11/3', '11/5', '11/7', '11/9', '11/11', '11/13', '11/15', '11/17', '11/19', '11/21', '11/23', '11/25', '11/27', '11/29'],
+                    datasets: [{
+                        label: '每日情绪',
+                        data: [6, 5, 6, 4, 2, 3, 1, 0, 1, 3, 5, 6, 4, 5, 6],
+                        borderColor: '#4299e1',
+                        backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                        tension: 0.3,
+                        fill: false,
+                        pointBackgroundColor: function(context) {
+                            const value = context.dataset.data[context.dataIndex];
+                            return value === 0 ? '#10B981' : // 平静 - 绿色
+                                   value === 1 ? '#3B82F6' : // 开心 - 蓝色
+                                   value === 2 ? '#6366F1' : // 兴奋 - 靛蓝色
+                                   value === 3 ? '#A855F7' : // 困惑 - 紫色
+                                   value === 4 ? '#F59E0B' : // 害怕 - 黄色
+                                   value === 5 ? '#EF4444' : // 愤怒 - 红色
+                                   '#EC4899';                // 伤心 - 粉色
+                        },
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 6,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return ['平静', '开心', '兴奋', '困惑', '害怕', '愤怒', '伤心'][value];
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: '情绪状态'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '日期'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const emotions = ['平静', '开心', '兴奋', '困惑', '害怕', '愤怒', '伤心'];
+                                    return `情绪: ${emotions[context.parsed.y]}`;
+                                }
+                            }
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+            
+            // 情绪持续时间图表
+            const emotionDurationCtx = document.getElementById('emotionDurationChart').getContext('2d');
+            const emotionDurationChart = new Chart(emotionDurationCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['开心', '焦虑', '生气', '悲伤'],
+                    datasets: [
+                        {
+                            label: '上个月 (分钟)',
+                            data: [120, 45, 60, 30],
+                            backgroundColor: 'rgba(159, 122, 234, 0.7)',
+                        },
+                        {
+                            label: '本月 (分钟)',
+                            data: [150, 35, 40, 25],
+                            backgroundColor: 'rgba(66, 153, 225, 0.7)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                boxWidth: 12,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '平均持续时间 (分钟)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 睡眠图表
+            const sleepCtx = document.getElementById('sleepChart').getContext('2d');
+            const sleepChart = new Chart(sleepCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [
+                        {
+                            label: '睡眠时长 (小时)',
+                            data: [8.2, 8.5, 7.9, 8.3, 8.6, 9.2, 9.5],
+                            backgroundColor: 'rgba(66, 153, 225, 0.7)',
+                            yAxisID: 'y',
+                        },
+                        {
+                            label: '醒来次数',
+                            data: [2, 1, 3, 2, 1, 0, 1],
+                            backgroundColor: 'rgba(237, 137, 54, 0.7)',
+                            type: 'line',
+                            yAxisID: 'y1',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '睡眠时长 (小时)'
+                            }
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            grid: {
+                                drawOnChartArea: false,
+                            },
+                            title: {
+                                display: true,
+                                text: '醒来次数'
+                            },
+                            max: 5
+                        }
+                    }
+                }
+            });
+            
+            // 睡眠与情绪关联图表
+            const sleepMoodCtx = document.getElementById('sleepMoodChart').getContext('2d');
+            const sleepMoodChart = new Chart(sleepMoodCtx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: '睡眠与情绪关联',
+                        data: [
+                            {x: 6.5, y: 55},
+                            {x: 7.0, y: 60},
+                            {x: 7.2, y: 65},
+                            {x: 7.5, y: 68},
+                            {x: 8.0, y: 75},
+                            {x: 8.2, y: 78},
+                            {x: 8.5, y: 82},
+                            {x: 9.0, y: 85},
+                            {x: 9.5, y: 90},
+                        ],
+                        backgroundColor: 'rgba(159, 122, 234, 0.7)',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '睡眠时长 (小时)'
+                            },
+                            min: 6,
+                            max: 10
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '情绪评分'
+                            },
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `睡眠: ${context.parsed.x}小时, 情绪评分: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 添加训练图表
+            const trainingCtx = document.getElementById('trainingChart').getContext('2d');
+            const trainingChart = new Chart(trainingCtx, {
+                type: 'line',
+                data: {
+                    labels: ['11/1', '11/5', '11/10', '11/15', '11/20', '11/25', '11/30'],
+                    datasets: [
+                        {
+                            label: '专注时间 (分钟)',
+                            data: [15, 18, 20, 22, 25, 28, 30],
+                            borderColor: '#6366f1',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.3,
+                            fill: true,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: '完成任务数',
+                            data: [3, 4, 5, 6, 7, 7, 8],
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            tension: 0.3,
+                            fill: true,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '专注时间 (分钟)'
+                            },
+                            max: 40
+                        },
+                        y1: {
+                            beginAtZero: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '完成任务数'
+                            },
+                            max: 10,
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 训练类型分布图表
+            const trainingTypeCtx = document.getElementById('trainingTypeChart').getContext('2d');
+            const trainingTypeChart = new Chart(trainingTypeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['社交互动训练', '情绪识别训练', '注意力训练', '语言表达训练', '其他训练'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#cbd5e0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        }
+                    }
+                }
+            });
+
+            // 日程管理图表
+            const scheduleCtx = document.getElementById('scheduleChart').getContext('2d');
+            const scheduleChart = new Chart(scheduleCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+                    datasets: [
+                        {
+                            label: '计划任务数',
+                            data: [8, 7, 8, 6, 7, 5, 4],
+                            backgroundColor: 'rgba(249, 115, 22, 0.6)',
+                        },
+                        {
+                            label: '完成任务数',
+                            data: [7, 5, 6, 4, 6, 3, 3],
+                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '任务数量'
+                            },
+                            max: 10
+                        }
+                    }
+                }
+            });
+
+            // 常规活动坚持度
+            const routineCtx = document.getElementById('routineChart').getContext('2d');
+            const routineChart = new Chart(routineCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['早晨常规', '学习时间', '午休时间', '户外活动', '晚间常规'],
+                    datasets: [
+                        {
+                            label: '本月坚持度',
+                            data: [90, 75, 85, 65, 70],
+                            backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                            borderColor: 'rgba(249, 115, 22, 0.8)',
+                            pointBackgroundColor: 'rgba(249, 115, 22, 1)',
+                        },
+                        {
+                            label: '上月坚持度',
+                            data: [80, 65, 75, 60, 55],
+                            backgroundColor: 'rgba(107, 114, 128, 0.2)',
+                            borderColor: 'rgba(107, 114, 128, 0.8)',
+                            pointBackgroundColor: 'rgba(107, 114, 128, 1)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: true
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+
+            // 日记情感基调
+            const diaryMoodCtx = document.getElementById('diaryMoodChart').getContext('2d');
+            const diaryMoodChart = new Chart(diaryMoodCtx, {
+                type: 'line',
+                data: {
+                    labels: ['第1周', '第2周', '第3周', '第4周'],
+                    datasets: [
+                        {
+                            label: '积极情感',
+                            data: [55, 60, 68, 75],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: '消极情感',
+                            data: [45, 38, 30, 25],
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '情感强度 (%)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 日记主题分布
+            const diaryTopicsCtx = document.getElementById('diaryTopicsChart').getContext('2d');
+            const diaryTopicsChart = new Chart(diaryTopicsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['家庭活动', '学校经历', '兴趣爱好', '社交互动', '情绪表达'],
+                    datasets: [
+                        {
+                            label: '本月记录次数',
+                            data: [12, 8, 15, 6, 10],
+                            backgroundColor: 'rgba(234, 179, 8, 0.6)',
+                        },
+                        {
+                            label: '上月记录次数',
+                            data: [8, 10, 12, 3, 7],
+                            backgroundColor: 'rgba(107, 114, 128, 0.6)',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '记录次数'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // 这里预留后端API数据接口
+            // 示例API调用:
+            /*
+            async function fetchReportData() {
+                try {
+                    const response = await fetch('/api/reports/user/123/monthly');
+                    const data = await response.json();
+                    
+                    // 更新图表数据
+                    overviewChart.data.datasets[0].data = data.overview.emotionalStability;
+                    overviewChart.data.datasets[1].data = data.overview.socialInteraction;
+                    overviewChart.data.datasets[2].data = data.overview.sleepQuality;
+                    overviewChart.update();
+                    
+                    // 更新其他图表...
+                    
+                } catch (error) {
+                    console.error('无法获取报告数据:', error);
+                }
+            }
+            
+            // 初始加载
+            fetchReportData();
+            
+            // 时间范围变化时重新加载数据
+            document.getElementById('timeRange').addEventListener('change', function(e) {
+                const range = e.target.value;
+                // 调用相应的API端点
+                // ...
+            });
+            */
+        });
+    </script>
+</body>
+</html>

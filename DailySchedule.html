@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日程管理 - 星语助手</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #4299e1 0%, #fef3c7 100%);
+            position: relative;
+        }
+        
+        /* 背景装饰元素 */
+        .bg-decoration {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: -1;
+        }
+        
+        .bg-circle1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+        }
+        
+        .bg-circle2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            right: -150px;
+        }
+        
+        .main-container {
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+        
+        .content-card {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .content-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            transform: translateY(-5px);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .btn {
+            font-size: 1.1rem;
+            padding: 0.75rem 2rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .version-info {
+            position: fixed;
+            bottom: 1rem;
+            right: 1.5rem;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        /* 日历样式 */
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+        
+        .calendar-day {
+            background-color: white;
+            border-radius: 8px;
+            padding: 8px;
+            min-height: 100px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .calendar-day:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .calendar-day-number {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #4a5568;
+        }
+        
+        .today {
+            background-color: #ebf8ff;
+            border-left: 3px solid #4299e1;
+        }
+        
+        .schedule-item {
+            background-color: #ebf5ff;
+            border-left: 3px solid #4299e1;
+            padding: 6px 8px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .schedule-item:hover {
+            background-color: #bee3f8;
+        }
+        
+        .schedule-item.important {
+            background-color: #feebc8;
+            border-left: 3px solid #ed8936;
+        }
+        
+        .schedule-form {
+            display: none;
+            margin-top: 1.5rem;
+        }
+        
+        .schedule-form.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        
+        .schedule-list {
+            margin-top: 1.5rem;
+        }
+        
+        .event-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+        
+        .event-card:hover {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .calendar {
+                grid-template-columns: repeat(1, 1fr);
+            }
+            
+            .calendar-header {
+                display: none;
+            }
+            
+            .calendar-day {
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景装饰 -->
+    <div class="bg-decoration bg-circle1"></div>
+    <div class="bg-decoration bg-circle2"></div>
+    
+    <div class="main-container">
+        <div class="header">
+            <h1>日程管理</h1>
+            <p class="text-gray-600 mt-2">规划和组织孩子的日常活动与训练计划</p>
+        </div>
+        
+        <!-- 日程管理工具栏 -->
+        <div class="content-card">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <button id="prev-month" class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 id="current-month" class="text-xl font-semibold text-gray-800">2025年1月</h2>
+                    <button id="next-month" class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="flex space-x-3">
+                    <button id="add-schedule-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i>添加日程
+                    </button>
+                    <button id="today-btn" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
+                        今天
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 添加日程表单 -->
+            <div id="schedule-form" class="schedule-form">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="text-lg font-medium text-blue-700 mb-3">添加新日程</h3>
+                    <form id="new-schedule-form">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">日程标题</label>
+                                <input type="text" id="schedule-title" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="例如：语言训练">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">日期</label>
+                                <input type="date" id="schedule-date" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">开始时间</label>
+                                <input type="time" id="schedule-start-time" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">结束时间</label>
+                                <input type="time" id="schedule-end-time" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">日程类型</label>
+                                <div class="flex space-x-4">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="schedule-type" value="training" class="text-blue-600" checked>
+                                        <span class="ml-2">训练活动</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="schedule-type" value="therapy" class="text-green-600">
+                                        <span class="ml-2">治疗课程</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="schedule-type" value="fun" class="text-yellow-600">
+                                        <span class="ml-2">娱乐活动</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="schedule-type" value="important" class="text-red-600">
+                                        <span class="ml-2">重要事项</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">日程描述</label>
+                                <textarea id="schedule-description" class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 h-24" placeholder="添加详细信息..."></textarea>
+                            </div>
+                        </div>
+                        <div class="flex justify-end mt-4 space-x-3">
+                            <button type="button" id="cancel-schedule-btn" class="bg-white text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-50">
+                                取消
+                            </button>
+                            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                                保存日程
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- 日历视图 -->
+            <div class="mt-6">
+                <div class="calendar-header">
+                    <div>周日</div>
+                    <div>周一</div>
+                    <div>周二</div>
+                    <div>周三</div>
+                    <div>周四</div>
+                    <div>周五</div>
+                    <div>周六</div>
+                </div>
+                <div id="calendar" class="calendar">
+                    <!-- 日历内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- 今日日程 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-day mr-2 text-blue-500"></i>今日日程
+            </h2>
+            <div id="today-schedule" class="schedule-list">
+                <!-- 今日日程列表将通过JavaScript动态生成 -->
+                <div class="text-center text-gray-500 py-4" id="no-schedule-today">
+                    今天没有安排日程
+                </div>
+            </div>
+        </div>
+        
+        <!-- 即将到来的日程 -->
+        <div class="content-card">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-alt mr-2 text-purple-500"></i>即将到来的日程
+            </h2>
+            <div id="upcoming-schedule" class="schedule-list">
+                <!-- 即将到来的日程列表将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 底部按钮 -->
+        <div class="flex justify-center mt-6 mb-10">
+            <button id="back-btn" class="btn bg-white hover:bg-gray-100 text-blue-500 font-semibold border border-blue-200 shadow-md transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-arrow-left mr-2"></i>返回主页
+            </button>
+        </div>
+    </div>
+    
+    <div class="version-info">Version 1.0.0</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录
+            const userLoginInfo = localStorage.getItem('userLoginInfo');
+            if (!userLoginInfo) {
+                // 如果用户未登录，重定向到登录页面
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // 获取用户角色
+            const userProfile = localStorage.getItem('userProfile');
+            let userRole = '';
+            if (userProfile) {
+                const profileData = JSON.parse(userProfile);
+                userRole = profileData.role || '';
+            }
+            
+            // 表单控制
+            const addScheduleBtn = document.getElementById('add-schedule-btn');
+            const scheduleForm = document.getElementById('schedule-form');
+            const cancelScheduleBtn = document.getElementById('cancel-schedule-btn');
+            const newScheduleForm = document.getElementById('new-schedule-form');
+            
+            // 日历相关元素
+            const prevMonthBtn = document.getElementById('prev-month');
+            const nextMonthBtn = document.getElementById('next-month');
+            const currentMonthElem = document.getElementById('current-month');
+            const calendarElem = document.getElementById('calendar');
+            const todayBtn = document.getElementById('today-btn');
+            
+            // 日程列表元素
+            const todayScheduleElem = document.getElementById('today-schedule');
+            const upcomingScheduleElem = document.getElementById('upcoming-schedule');
+            const noScheduleTodayElem = document.getElementById('no-schedule-today');
+            
+            // 返回按钮
+            const backBtn = document.getElementById('back-btn');
+            
+            // 当前日期和选中日期
+            const today = new Date();
+            let currentMonth = today.getMonth();
+            let currentYear = today.getFullYear();
+            let selectedDate = today;
+            
+            // 从localStorage获取日程
+            let schedules = [];
+            const savedSchedules = localStorage.getItem('schedules');
+            if (savedSchedules) {
+                schedules = JSON.parse(savedSchedules);
+            }
+            
+            // 初始化日历
+            updateMonthDisplay();
+            renderCalendar();
+            renderTodaySchedule();
+            renderUpcomingSchedule();
+            
+            // 添加日程按钮事件
+            addScheduleBtn.addEventListener('click', function() {
+                scheduleForm.classList.toggle('active');
+                
+                // 如果表单显示，默认设置为今天日期
+                if (scheduleForm.classList.contains('active')) {
+                    const today = new Date();
+                    const dateStr = formatDateForInput(today);
+                    document.getElementById('schedule-date').value = dateStr;
+                }
+            });
+            
+            // 取消添加日程
+            cancelScheduleBtn.addEventListener('click', function() {
+                scheduleForm.classList.remove('active');
+                newScheduleForm.reset();
+            });
+            
+            // 提交日程表单
+            newScheduleForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const title = document.getElementById('schedule-title').value.trim();
+                const date = document.getElementById('schedule-date').value;
+                const startTime = document.getElementById('schedule-start-time').value;
+                const endTime = document.getElementById('schedule-end-time').value;
+                const description = document.getElementById('schedule-description').value.trim();
+                const type = document.querySelector('input[name="schedule-type"]:checked').value;
+                
+                if (!title || !date || !startTime) {
+                    alert('请填写标题、日期和开始时间');
+                    return;
+                }
+                
+                // 创建新日程
+                const newSchedule = {
+                    id: Date.now().toString(),
+                    title,
+                    date,
+                    startTime,
+                    endTime,
+                    description,
+                    type,
+                    createdBy: userRole
+                };
+                
+                // 添加到日程列表
+                schedules.push(newSchedule);
+                
+                // 保存到localStorage
+                localStorage.setItem('schedules', JSON.stringify(schedules));
+                
+                // 更新日历和日程列表
+                renderCalendar();
+                renderTodaySchedule();
+                renderUpcomingSchedule();
+                
+                // 重置并隐藏表单
+                newScheduleForm.reset();
+                scheduleForm.classList.remove('active');
+                
+                alert('日程添加成功！');
+            });
+            
+            // 上个月按钮
+            prevMonthBtn.addEventListener('click', function() {
+                currentMonth--;
+                if (currentMonth < 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                }
+                updateMonthDisplay();
+                renderCalendar();
+            });
+            
+            // 下个月按钮
+            nextMonthBtn.addEventListener('click', function() {
+                currentMonth++;
+                if (currentMonth > 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                }
+                updateMonthDisplay();
+                renderCalendar();
+            });
+            
+            // 今天按钮
+            todayBtn.addEventListener('click', function() {
+                const now = new Date();
+                currentMonth = now.getMonth();
+                currentYear = now.getFullYear();
+                selectedDate = now;
+                updateMonthDisplay();
+                renderCalendar();
+            });
+            
+            // 返回主页
+            backBtn.addEventListener('click', function() {
+                window.location.href = 'home.html';
+            });
+            
+            // 更新月份显示
+            function updateMonthDisplay() {
+                const months = [
+                    '1月', '2月', '3月', '4月', '5月', '6月',
+                    '7月', '8月', '9月', '10月', '11月', '12月'
+                ];
+                currentMonthElem.textContent = `${currentYear}年${months[currentMonth]}`;
+            }
+            
+            // 渲染日历
+            function renderCalendar() {
+                calendarElem.innerHTML = '';
+                
+                // 获取当月第一天是星期几
+                const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+                
+                // 获取当月天数
+                const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                
+                // 获取上个月天数
+                const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+                
+                // 填充上个月的日期
+                for (let i = firstDay - 1; i >= 0; i--) {
+                    const day = daysInPrevMonth - i;
+                    const prevMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+                    const prevYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+                    const dateStr = `${prevYear}-${(prevMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+                    
+                    const dayElem = createDayElement(day, dateStr, true);
+                    calendarElem.appendChild(dayElem);
+                }
+                
+                // 填充当月的日期
+                for (let i = 1; i <= daysInMonth; i++) {
+                    const dateStr = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                    const isToday = i === today.getDate() && 
+                                    currentMonth === today.getMonth() && 
+                                    currentYear === today.getFullYear();
+                    
+                    const dayElem = createDayElement(i, dateStr, false, isToday);
+                    calendarElem.appendChild(dayElem);
+                }
+                
+                // 计算需要填充的下个月天数
+                const totalCells = 42; // 6行 x 7列
+                const cellsFilled = firstDay + daysInMonth;
+                const cellsToFill = totalCells - cellsFilled;
+                
+                // 填充下个月的日期
+                for (let i = 1; i <= cellsToFill; i++) {
+                    const nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+                    const nextYear = currentMonth === 11 ? currentYear + 1 : currentYear;
+                    const dateStr = `${nextYear}-${(nextMonth + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+                    
+                    const dayElem = createDayElement(i, dateStr, true);
+                    calendarElem.appendChild(dayElem);
+                }
+            }
+            
+            // 创建日历单元格
+            function createDayElement(day, dateStr, isOtherMonth = false, isToday = false) {
+                const dayElem = document.createElement('div');
+                dayElem.className = `calendar-day ${isOtherMonth ? 'opacity-50' : ''} ${isToday ? 'today' : ''}`;
+                
+                const dayNumberElem = document.createElement('div');
+                dayNumberElem.className = 'calendar-day-number';
+                dayNumberElem.textContent = day;
+                dayElem.appendChild(dayNumberElem);
+                
+                // 添加当天的日程
+                const daySchedules = schedules.filter(schedule => schedule.date === dateStr);
+                daySchedules.forEach(schedule => {
+                    const scheduleElem = document.createElement('div');
+                    scheduleElem.className = `schedule-item ${schedule.type === 'important' ? 'important' : ''}`;
+                    scheduleElem.textContent = `${schedule.startTime} ${schedule.title}`;
+                    scheduleElem.setAttribute('data-id', schedule.id);
+                    
+                    // 添加点击事件查看详情
+                    scheduleElem.addEventListener('click', function() {
+                        alert(`${schedule.title}\n时间: ${schedule.date} ${schedule.startTime}-${schedule.endTime}\n描述: ${schedule.description}`);
+                    });
+                    
+                    dayElem.appendChild(scheduleElem);
+                });
+                
+                return dayElem;
+            }
+            
+            // 渲染今日日程
+            function renderTodaySchedule() {
+                const todayStr = formatDateForInput(today);
+                const todaySchedules = schedules.filter(schedule => schedule.date === todayStr);
+                
+                if (todaySchedules.length === 0) {
+                    noScheduleTodayElem.style.display = 'block';
+                    return;
+                } else {
+                    noScheduleTodayElem.style.display = 'none';
+                }
+                
+                // 清空当前列表
+                while (todayScheduleElem.firstChild && todayScheduleElem.firstChild !== noScheduleTodayElem) {
+                    todayScheduleElem.removeChild(todayScheduleElem.firstChild);
+                }
+                
+                // 按时间排序
+                todaySchedules.sort((a, b) => a.startTime.localeCompare(b.startTime));
+                
+                // 添加今日日程
+                todaySchedules.forEach(schedule => {
+                    const scheduleCard = createScheduleCard(schedule);
+                    todayScheduleElem.appendChild(scheduleCard);
+                });
+            }
+            
+            // 渲染即将到来的日程
+            function renderUpcomingSchedule() {
+                const todayStr = formatDateForInput(today);
+                
+                // 获取未来7天的日程，不包括今天
+                const nextWeek = new Date();
+                nextWeek.setDate(today.getDate() + 7);
+                const nextWeekStr = formatDateForInput(nextWeek);
+                
+                const upcomingSchedules = schedules.filter(schedule => 
+                    schedule.date > todayStr && schedule.date <= nextWeekStr
+                );
+                
+                // 清空当前列表
+                upcomingScheduleElem.innerHTML = '';
+                
+                if (upcomingSchedules.length === 0) {
+                    const noScheduleElem = document.createElement('div');
+                    noScheduleElem.className = 'text-center text-gray-500 py-4';
+                    noScheduleElem.textContent = '未来一周没有安排日程';
+                    upcomingScheduleElem.appendChild(noScheduleElem);
+                    return;
+                }
+                
+                // 按日期和时间排序
+                upcomingSchedules.sort((a, b) => {
+                    if (a.date !== b.date) return a.date.localeCompare(b.date);
+                    return a.startTime.localeCompare(b.startTime);
+                });
+                
+                // 添加即将到来的日程
+                upcomingSchedules.forEach(schedule => {
+                    const scheduleCard = createScheduleCard(schedule);
+                    upcomingScheduleElem.appendChild(scheduleCard);
+                });
+            }
+            
+            // 创建日程卡片
+            function createScheduleCard(schedule) {
+                const card = document.createElement('div');
+                card.className = 'event-card';
+                card.setAttribute('data-id', schedule.id);
+                
+                // 日程类型颜色映射
+                const typeColors = {
+                    training: 'bg-blue-100 text-blue-600',
+                    therapy: 'bg-green-100 text-green-600',
+                    fun: 'bg-yellow-100 text-yellow-600',
+                    important: 'bg-red-100 text-red-600'
+                };
+                
+                // 获取日期的星期几
+                const scheduleDate = new Date(schedule.date);
+                const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+                const weekday = weekdays[scheduleDate.getDay()];
+                
+                // 格式化日期为可读格式
+                const formattedDate = `${scheduleDate.getMonth() + 1}月${scheduleDate.getDate()}日 ${weekday}`;
+                
+                // 类型标签名称映射
+                const typeLabels = {
+                    training: '训练活动',
+                    therapy: '治疗课程',
+                    fun: '娱乐活动',
+                    important: '重要事项'
+                };
+                
+                card.innerHTML = `
+                    <div class="flex justify-between">
+                        <h3 class="font-medium text-gray-800">${schedule.title}</h3>
+                        <span class="px-2 py-1 text-xs rounded ${typeColors[schedule.type]}">${typeLabels[schedule.type]}</span>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-600">
+                        <p><i class="far fa-calendar-alt mr-1"></i>${formattedDate}</p>
+                        <p class="mt-1"><i class="far fa-clock mr-1"></i>${schedule.startTime} - ${schedule.endTime || '未设置'}</p>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-700">${schedule.description || '无描述'}</p>
+                    <div class="flex justify-end mt-3">
+                        <button class="edit-schedule-btn mr-2 text-blue-500 hover:text-blue-700">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-schedule-btn text-red-500 hover:text-red-700">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // 添加编辑按钮事件
+                card.querySelector('.edit-schedule-btn').addEventListener('click', function() {
+                    // 这里添加编辑功能，暂时使用alert代替
+                    alert('编辑功能正在开发中...');
+                });
+                
+                // 添加删除按钮事件
+                card.querySelector('.delete-schedule-btn').addEventListener('click', function() {
+                    if (confirm('确定要删除这个日程吗？')) {
+                        deleteSchedule(schedule.id);
+                    }
+                });
+                
+                return card;
+            }
+            
+            // 删除日程
+            function deleteSchedule(id) {
+                schedules = schedules.filter(schedule => schedule.id !== id);
+                localStorage.setItem('schedules', JSON.stringify(schedules));
+                
+                // 更新界面
+                renderCalendar();
+                renderTodaySchedule();
+                renderUpcomingSchedule();
+            }
+            
+            // 将日期格式化为input[type="date"]接受的格式: YYYY-MM-DD
+            function formatDateForInput(date) {
+                const year = date.getFullYear();
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const day = date.getDate().toString().padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+        });
+    </script>
+</body>
+</html> 
